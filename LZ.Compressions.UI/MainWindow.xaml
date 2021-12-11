@@ -15,9 +15,6 @@
     Icon="{StaticResource IconImage}"
     ShowIcon="True"
     mc:Ignorable="d">
-    <hc:Window.DataContext>
-        <viewmodels:MainViewModel />
-    </hc:Window.DataContext>
 
     <Grid Margin="10,10,10,30">
         <Grid.ColumnDefinitions>
@@ -86,7 +83,7 @@
                     Grid.Column="0"
                     VerticalContentAlignment="Top"
                     hc:InfoElement.Placeholder="Введите строку для сжатия"
-                    Text="{Binding SelectedCompressorViewModel.InputString}"
+                    Text="{Binding SelectedCompressorViewModel.InputString, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="Wrap"
                     VerticalScrollBarVisibility="Auto" />
 
@@ -94,7 +91,7 @@
                     Grid.Column="2"
                     VerticalContentAlignment="Top"
                     hc:InfoElement.Placeholder="Введите строку для распаковки"
-                    Text="{Binding SelectedCompressorViewModel.OutputString}"
+                    Text="{Binding SelectedCompressorViewModel.OutputString, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="Wrap"
                     VerticalScrollBarVisibility="Auto" />
 

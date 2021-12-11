@@ -8,11 +8,6 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
         public override string Title => "RLE";
         public override string Decryption => "Run Lenth Encode";
 
-        public RLEViewModel() : base(null, null)
-        {
-
-        }
-
         public RLEViewModel(LZWCompressor compressor, ITimerService timer) : base(compressor, timer)
         {
         }

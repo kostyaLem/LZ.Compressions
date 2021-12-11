@@ -57,10 +57,10 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
         public virtual void DecompressData()
         {
             _timer.Start();
-            var decompressed = _compressor.Decompress(InputString);
+            var decompressed = _compressor.Decompress(OutputString);
 
             ElapsedTime = _timer.Stop();
-            OutputString = decompressed;
+            InputString = decompressed;
         }
 
         public virtual void ClearData()

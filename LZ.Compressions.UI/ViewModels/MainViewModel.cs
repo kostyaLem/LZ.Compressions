@@ -1,7 +1,9 @@
 ﻿using DevExpress.Mvvm;
 using LZ.Compressions.UI.Models;
 using LZ.Compressions.UI.ViewModels.CompressorViewModels;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace LZ.Compressions.UI.ViewModels
 {
@@ -17,15 +19,12 @@ namespace LZ.Compressions.UI.ViewModels
             set { SetValue(value, nameof(SelectedCompressorViewModel)); }
         }
 
-        public MainViewModel()
+        public MainViewModel(IEnumerable<CompressorViewModel> compressorViewModels)
         {
             CompressorModels = new ObservableCollection<CompressorModel>
-            {
-                new CompressorModel(this, new LZWViewModel()),
-                new CompressorModel(this, new LZ77ViewModel()),
-                new CompressorModel(this, new LZ78ViewModel()),
-                new CompressorModel(this, new RLEViewModel())
-            };
+            (
+                compressorViewModels.Select(vm => new CompressorModel(this, vm))
+            );
             CompressorModels[0].IsSelected = true;
         }
     }

@@ -8,11 +8,6 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
         public override string Title => "LZ78";
         public override string Decryption => "Lempel Ziv 78";
 
-        public LZ78ViewModel() : base(null, null)
-        {
-
-        }
-
         public LZ78ViewModel(LZWCompressor compressor, ITimerService timer) : base(compressor, timer)
         {
         }
