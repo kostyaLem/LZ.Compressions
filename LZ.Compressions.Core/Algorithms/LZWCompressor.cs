@@ -6,7 +6,7 @@ namespace LZ.Compressions.Core.Algorithms
 {
     public class LZWCompressor : ITextCompressor
     {
-        private const char Delimiter = ',';
+        private const char Delimiter = ' ';
 
         public string Compress(string uncompressed)
         {
