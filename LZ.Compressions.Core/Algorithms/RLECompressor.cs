@@ -7,9 +7,36 @@ using System.Text;
 
 namespace LZ.Compressions.Core.Algorithms
 {
-    public class RLECompressor
+    public class RLECompressor : ITextCompressor
     {
-        public IReadOnlyCollection<byte> Compress(string uncompressed)
+        public string Decompress(string compressed)
+        {
+            var res = Convert.ToByte(compressed.Split(" ")[0]);
+
+            var bytes = compressed.Split(" ").Select(x => Convert.ToByte(x)).ToArray();
+            var stringBuilder = new StringBuilder();
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                if (bytes[i] > 127)
+                {
+                    var repeats = bytes[i] - 127 + 1;
+                    stringBuilder.Append(new string((char)bytes[i + 1], repeats));
+                    i++;
+                }
+                else
+                {
+                    var repeats = bytes[i] + 1;
+                    var sub = bytes.Skip(i + 1).Take(repeats);
+                    stringBuilder.Append(string.Join(string.Empty, sub.Select(x => (char)x)));
+                    i += repeats;
+                }
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        public string Compress(string uncompressed)
         {
             var uncompressedBytes = Encoding.UTF8.GetBytes(uncompressed);
             var unrepeats = 0;
@@ -20,9 +47,9 @@ namespace LZ.Compressions.Core.Algorithms
 
             for (int i = 0; i < uncompressedBytes.Length; i++)
             {
-                if (i + 1 < uncompressedBytes.Length 
-                    && uncompressedBytes[i] == uncompressedBytes[i + 1] 
-                    && repeats <= 129)
+                if (i + 1 < uncompressedBytes.Length
+                    && uncompressedBytes[i] == uncompressedBytes[i + 1]
+                    && repeats < 129)
                 {
                     if (unrepeats > 0)
                     {
@@ -56,31 +83,10 @@ namespace LZ.Compressions.Core.Algorithms
                 }
             }
 
-            return compressedBytes;
-        }
+            if (unrepeatedBytes.Count != 0)
+                compressedBytes.AddRange(unrepeatedBytes);
 
-        public string Decompress(byte[] bytes)
-        {
-            var stringBuilder = new StringBuilder();
-
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                if (bytes[i] > 127)
-                {
-                    var repeats = bytes[i] - 127 + 1;
-                    stringBuilder.Append(new string((char)bytes[i + 1], repeats));
-                    i++;
-                }
-                else
-                {
-                    var repeats = bytes[i] + 1;
-                    var sub = bytes.Skip(i + 1).Take(repeats);
-                    stringBuilder.Append(string.Join(string.Empty, sub.Select(x => (char)x)));
-                    i += repeats;
-                }
-            }
-
-            return stringBuilder.ToString();
+            return string.Join(" ", compressedBytes);
         }
     }
 }
