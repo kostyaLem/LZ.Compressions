@@ -1,11 +1,12 @@
 ﻿<hc:Window
     x:Class="LZ.Compressions.UI.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="clr-namespace:LZ.Compressions.UI.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mconverters="clr-namespace:Microsoft.Windows.Controls;assembly=HandyControl"
     Title="{Binding MainWindowTitle}"
     Width="950"
     Height="450"
@@ -14,6 +15,10 @@
     Icon="{StaticResource IconImage}"
     ShowIcon="True"
     mc:Ignorable="d">
+    <hc:Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </hc:Window.Resources>
+
 
     <Grid Margin="10,10,10,30">
         <Grid.ColumnDefinitions>
@@ -81,18 +86,31 @@
                 <hc:TextBox
                     Grid.Column="0"
                     VerticalContentAlignment="Top"
+                    hc:BorderElement.CornerRadius="10,5,0,10"
                     hc:InfoElement.Placeholder="Введите строку для сжатия"
                     Text="{Binding SelectedCompressorViewModel.InputString, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="Wrap"
                     VerticalScrollBarVisibility="Auto" />
 
-                <hc:TextBox
-                    Grid.Column="2"
-                    VerticalContentAlignment="Top"
-                    hc:InfoElement.Placeholder="Введите строку для распаковки"
-                    Text="{Binding SelectedCompressorViewModel.OutputString, UpdateSourceTrigger=PropertyChanged}"
-                    TextWrapping="Wrap"
-                    VerticalScrollBarVisibility="Auto" />
+                <DockPanel Grid.Column="2" LastChildFill="True">
+                    <hc:TextBox
+                        MinHeight="100"
+                        VerticalContentAlignment="Top"
+                        hc:BorderElement.CornerRadius="0,5,10,0"
+                        hc:TitleElement.Title="Читаемый вид"
+                        DockPanel.Dock="Bottom"
+                        IsReadOnly="True"
+                        Text="{Binding SelectedCompressorViewModel.ReadableView}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding SelectedCompressorViewModel.CanShowReadableView, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <hc:TextBox
+                        VerticalContentAlignment="Top"
+                        hc:BorderElement.CornerRadius="5,10,5,0"
+                        hc:InfoElement.Placeholder="Введите строку для распаковки"
+                        Text="{Binding SelectedCompressorViewModel.OutputString, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto" />
+                </DockPanel>
 
                 <Grid Grid.Column="1">
 
@@ -102,7 +120,7 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
 
-                        <hc:ElementGroup>
+                        <hc:ElementGroup Margin="5,0">
                             <Border Padding="6,0" Style="{StaticResource BorderRegion}">
                                 <Path
                                     Width="16"
@@ -120,8 +138,8 @@
 
                         <StackPanel
                             Grid.Row="1"
-                            Margin="10,0"
-                            VerticalAlignment="Center">
+                            Margin="10,30"
+                            VerticalAlignment="Top">
 
                             <Button
                                 Margin="0,0,0,10"

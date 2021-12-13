@@ -17,13 +17,15 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
         public DelegateCommand DecompressCommand { get; }
         public DelegateCommand ClearCommand { get; }
 
+        public event EventHandler DataCompressed;
+
         public CompressorViewModel(ITextCompressor compressor, ITimerService timer)
         {
             _compressor = compressor;
             _timer = timer;
 
-            CompressCommand = new DelegateCommand(CompressData, () => !string.IsNullOrWhiteSpace(InputString));
-            DecompressCommand = new DelegateCommand(DecompressData, () => !string.IsNullOrWhiteSpace(OutputString));
+            CompressCommand = new DelegateCommand(CompressData, !string.IsNullOrWhiteSpace(InputString));
+            DecompressCommand = new DelegateCommand(DecompressData, !string.IsNullOrWhiteSpace(OutputString));
             ClearCommand = new DelegateCommand(ClearData);
         }
 
@@ -39,11 +41,19 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
             set { SetValue(value, nameof(OutputString)); }
         }
 
+        public string ReadableView
+        {
+            get { return GetValue<string>(nameof(ReadableView)); }
+            set { SetValue(value, nameof(ReadableView)); }
+        }
+
         public TimeSpan ElapsedTime
         {
             get { return GetValue<TimeSpan>(nameof(ElapsedTime)); }
             set { SetValue(value, nameof(ElapsedTime)); }
         }
+
+        public abstract bool CanShowReadableView { get; }
 
         public virtual void CompressData()
         {
@@ -52,6 +62,8 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 
             ElapsedTime = _timer.Stop();
             OutputString = compressed;
+
+            DataCompressed?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void DecompressData()

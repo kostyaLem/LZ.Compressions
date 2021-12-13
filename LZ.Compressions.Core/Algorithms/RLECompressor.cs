@@ -7,34 +7,9 @@ using System.Text;
 
 namespace LZ.Compressions.Core.Algorithms
 {
-    public class RLECompressor : ITextCompressor
+    public class RLECompressor : ITextCompressor, IReadableCompressor
     {
-        public string Decompress(string compressed)
-        {
-            var res = Convert.ToByte(compressed.Split(" ")[0]);
-
-            var bytes = compressed.Split(" ").Select(x => Convert.ToByte(x)).ToArray();
-            var stringBuilder = new StringBuilder();
-
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                if (bytes[i] > 127)
-                {
-                    var repeats = bytes[i] - 127 + 1;
-                    stringBuilder.Append(new string((char)bytes[i + 1], repeats));
-                    i++;
-                }
-                else
-                {
-                    var repeats = bytes[i] + 1;
-                    var sub = bytes.Skip(i + 1).Take(repeats);
-                    stringBuilder.Append(string.Join(string.Empty, sub.Select(x => (char)x)));
-                    i += repeats;
-                }
-            }
-
-            return stringBuilder.ToString();
-        }
+        private const string Splitter = " ";
 
         public string Compress(string uncompressed)
         {
@@ -86,7 +61,59 @@ namespace LZ.Compressions.Core.Algorithms
             if (unrepeatedBytes.Count != 0)
                 compressedBytes.AddRange(unrepeatedBytes);
 
-            return string.Join(" ", compressedBytes);
+            return string.Join(Splitter, compressedBytes);
+        }
+
+        public string Decompress(string compressed)
+        {
+            var bytes = compressed.Split(Splitter).Select(x => Convert.ToByte(x)).ToArray();
+            var stringBuilder = new StringBuilder();
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                if (bytes[i] > 127)
+                {
+                    var repeats = bytes[i] - 127 + 1;
+                    stringBuilder.Append(new string((char)bytes[i + 1], repeats));
+                    i++;
+                }
+                else
+                {
+                    var repeats = bytes[i] + 1;
+                    var sub = bytes.Skip(i + 1).Take(repeats);
+                    stringBuilder.Append(string.Join(string.Empty, sub.Select(x => (char)x)));
+                    i += repeats;
+                }
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        public string GetReadableView(string compressed)
+        {
+            var bytes = compressed.Split(Splitter).Select(x => Convert.ToByte(x)).ToArray();
+
+            if ((bytes.Length * 2) % 2 != 0)
+                throw new Exception();
+
+            var items = new List<string>();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                if (bytes[i] >= 128)
+                {
+                    var repeats = bytes[i] - 128 + 2;
+                    var ch = Convert.ToChar(bytes[i + 1]);
+                    items.Add($"{repeats}{ch}");
+                    i++;
+                }
+                else
+                {
+                    var ch = Convert.ToChar(bytes[i]);
+                    items.Add($"{ch}");
+                }
+            }
+
+            return string.Join(Splitter, items);
         }
     }
 }
