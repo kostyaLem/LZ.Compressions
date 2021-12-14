@@ -9,7 +9,7 @@ namespace LZ.Compressions.Core.Algorithms
 {
     public class RLECompressor : ITextCompressor, IReadableCompressor
     {
-        private const string Splitter = " ";
+        private const string Delimiter = " ";
 
         public string Compress(string uncompressed)
         {
@@ -61,12 +61,12 @@ namespace LZ.Compressions.Core.Algorithms
             if (unrepeatedBytes.Count != 0)
                 compressedBytes.AddRange(unrepeatedBytes);
 
-            return string.Join(Splitter, compressedBytes);
+            return string.Join(Delimiter, compressedBytes);
         }
 
         public string Decompress(string compressed)
         {
-            var bytes = compressed.Split(Splitter).Select(x => Convert.ToByte(x)).ToArray();
+            var bytes = compressed.Split(Delimiter).Select(x => Convert.ToByte(x)).ToArray();
             var stringBuilder = new StringBuilder();
 
             for (int i = 0; i < bytes.Length; i++)
@@ -91,7 +91,7 @@ namespace LZ.Compressions.Core.Algorithms
 
         public string GetReadableView(string compressed)
         {
-            var bytes = compressed.Split(Splitter).Select(x => Convert.ToByte(x)).ToArray();
+            var bytes = compressed.Split(Delimiter).Select(x => Convert.ToByte(x)).ToArray();
 
             if ((bytes.Length * 2) % 2 != 0)
                 throw new Exception();
@@ -113,7 +113,7 @@ namespace LZ.Compressions.Core.Algorithms
                 }
             }
 
-            return string.Join(Splitter, items);
+            return string.Join(Delimiter, items);
         }
     }
 }

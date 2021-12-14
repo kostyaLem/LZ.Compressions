@@ -28,6 +28,7 @@ namespace LZ.Compressions.UI
 
             serviceCollection.AddSingleton<LZWCompressor>();
             serviceCollection.AddSingleton<RLECompressor>();
+            serviceCollection.AddSingleton<LZ77Compressor>();
 
             serviceCollection.AddSingleton<LZWViewModel>();
             serviceCollection.AddSingleton<LZ77ViewModel>();
