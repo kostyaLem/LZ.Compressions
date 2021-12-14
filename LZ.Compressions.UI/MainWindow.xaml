@@ -88,21 +88,53 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0">
-                    <Run Text="Символов:" />
-                    <Run
-                        d:Text="5"
-                        FontWeight="Bold"
-                        Text="{Binding SelectedCompressorViewModel.InputString, Converter={converters:InputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                </TextBlock>
+                <StackPanel
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,0,0,2"
+                    Orientation="Horizontal">
+                    <TextBlock>
+                        <Run Text="Символов:" />
+                        <Run
+                            d:Text="5"
+                            FontWeight="Bold"
+                            Text="{Binding SelectedCompressorViewModel.InputString, Converter={converters:InputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                    </TextBlock>
+                    <Path
+                        Width="16"
+                        Height="16"
+                        Margin="5,0"
+                        Cursor="Hand"
+                        Data="{StaticResource InfoGeometry}"
+                        Fill="{DynamicResource DarkMaskBrush}"
+                        Stretch="Uniform"
+                        ToolTip="Количество символов подсчитывается как обычно"
+                        ToolTipService.InitialShowDelay="0" />
+                </StackPanel>
 
-                <TextBlock Grid.Row="0" Grid.Column="2">
-                    <Run Text="Символов:" />
-                    <Run
-                        d:Text="5"
-                        FontWeight="Bold"
-                        Text="{Binding SelectedCompressorViewModel.OutputString, Converter={converters:OutputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                </TextBlock>
+                <StackPanel
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="0,0,0,2"
+                    Orientation="Horizontal">
+                    <TextBlock>
+                        <Run Text="Символов:" />
+                        <Run
+                            d:Text="5"
+                            FontWeight="Bold"
+                            Text="{Binding SelectedCompressorViewModel.OutputString, Converter={converters:OutputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                    </TextBlock>
+                    <Path
+                        Width="16"
+                        Height="16"
+                        Margin="5,0"
+                        Cursor="Hand"
+                        Data="{StaticResource InfoGeometry}"
+                        Fill="{DynamicResource DarkMaskBrush}"
+                        Stretch="Uniform"
+                        ToolTip="Символы отображаются в виде байтов (0-255) и разделены пробелом (не учитывается) для читаемости.&#x0a;Если алгоритм поддерживает читаемый режим, то он отобразится справа внизу."
+                        ToolTipService.InitialShowDelay="0" />
+                </StackPanel>
 
                 <hc:TextBox
                     Grid.Row="1"
@@ -150,8 +182,9 @@
                                 <Path
                                     Width="16"
                                     Height="16"
+                                    Margin="0,2"
                                     Data="{StaticResource ClockGeometry}"
-                                    Fill="{DynamicResource BorderBrush}"
+                                    Fill="{DynamicResource SecondaryTextBrush}"
                                     Stretch="Uniform" />
                             </Border>
                             <TextBox

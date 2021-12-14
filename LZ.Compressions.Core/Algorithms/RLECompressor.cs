@@ -90,8 +90,8 @@ namespace LZ.Compressions.Core.Algorithms
         }
 
         public string GetReadableView(string compressed)
-        {
-            var bytes = compressed.Split(Delimiter).Select(x => Convert.ToByte(x)).ToArray();
+        {           
+            var bytes = compressed.Split(Delimiter).Select(x => Convert.ToChar(Convert.ToByte(x))).ToArray();
 
             if ((bytes.Length * 2) % 2 != 0)
                 throw new Exception();
@@ -113,7 +113,7 @@ namespace LZ.Compressions.Core.Algorithms
                 }
             }
 
-            return string.Join(Delimiter, items);
+            return string.Join(String.Empty, items);
         }
     }
 }
