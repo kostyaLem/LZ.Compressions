@@ -77,13 +77,35 @@
 
             <Grid Grid.Row="1">
 
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="0.5*" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
+                <TextBlock Grid.Row="0" Grid.Column="0">
+                    <Run Text="Символов:" />
+                    <Run
+                        d:Text="5"
+                        FontWeight="Bold"
+                        Text="{Binding SelectedCompressorViewModel.InputString, Converter={converters:InputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                </TextBlock>
+
+                <TextBlock Grid.Row="0" Grid.Column="2">
+                    <Run Text="Символов:" />
+                    <Run
+                        d:Text="5"
+                        FontWeight="Bold"
+                        Text="{Binding SelectedCompressorViewModel.OutputString, Converter={converters:OutputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                </TextBlock>
+
                 <hc:TextBox
+                    Grid.Row="1"
                     Grid.Column="0"
                     VerticalContentAlignment="Top"
                     hc:BorderElement.CornerRadius="10,5,0,10"
@@ -92,7 +114,10 @@
                     TextWrapping="Wrap"
                     VerticalScrollBarVisibility="Auto" />
 
-                <DockPanel Grid.Column="2" LastChildFill="True">
+                <DockPanel
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    LastChildFill="True">
                     <hc:TextBox
                         MinHeight="100"
                         VerticalContentAlignment="Top"
@@ -112,7 +137,7 @@
                         VerticalScrollBarVisibility="Auto" />
                 </DockPanel>
 
-                <Grid Grid.Column="1">
+                <Grid Grid.Row="1" Grid.Column="1">
 
                     <Grid>
                         <Grid.RowDefinitions>
