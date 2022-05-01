@@ -15,9 +15,15 @@ namespace LZ.Compressions.Core.Algorithms
             var left = new StringBuilder();
             var right = new StringBuilder(uncompressed);
 
+            //if (PreInit(uncompressed))
+            //{
+            //    var item = (0, 0, uncompressed[0]);
+            //    Enumerable.Range(0, 2).ToList().ForEach(x => items.Add(item));
+            //}
+
             for (int i = 0; i < uncompressed.Length; i++)
             {
-                if (FindMaxPrefix(left.ToString(), right.ToString(), out (int, string) follow))
+                if (FindMaxPrefix(left.ToString(), right.ToString(), out var follow))
                 {
                     left.Append(follow.Item2);
                     right.Remove(0, follow.Item2.Length);
@@ -57,23 +63,50 @@ namespace LZ.Compressions.Core.Algorithms
             return str.ToString();
         }
 
+        public bool Validate(string input)
+        {
+            throw new NotImplementedException();
+        }
+
         private bool FindMaxPrefix(string s1, string s2, out (int, string) follow)
         {
             follow = (-1, string.Empty);
 
-            for (int i = 0; i < s2.Length; i++)
+            for (int index = s1.Length; index > 0; index--)
             {
-                var substr = s2[0..(i + 1)];
-                var index = s1.LastIndexOf(substr);
+                for (int subLength = 1; subLength <= index; subLength++)
+                {
+                    var substr = s1[(index - 1)..];
 
-                if (index == -1)
-                    break;
+                    for (int repeats = 1; repeats <= Math.Ceiling(s2.Length / (double)substr.Length); repeats++)
+                    {
+                        var repeatStr = new string(Enumerable.Repeat(substr, repeats).SelectMany(x => x).ToArray());
 
-                follow = (s1.Length - index, substr);
+                        if (s2.StartsWith(repeatStr))
+                        {
+                            follow = (s1.Length - index + 1, repeatStr);
+
+                            if (repeatStr == s2)
+                            {
+                                follow = (s1.Length - index + 1, repeatStr[..^1]);
+                            }
+                        }
+                    }
+                }
             }
 
             if (follow.Item1 != -1)
                 return true;
+
+            return false;
+        }
+
+        private bool PreInit(string uncompressed)
+        {
+            if (uncompressed.Length == 2 && uncompressed.Distinct().Count() == 1)
+            {
+                return true;
+            }
 
             return false;
         }
