@@ -50,8 +50,10 @@ namespace LZ.Compressions.Core.Algorithms
 
         public bool ValidateBeforeCompress(string input)
         {
-            if (input.Any(char.IsDigit))
-                throw new InputStringValidateException("Входная строка содержит цифры");
+            if (input.Any(char.IsLetter))
+            {
+                throw new InputStringValidateException("Входная строка содержит не буквы");
+            }
 
             return true;
         }
@@ -66,7 +68,7 @@ namespace LZ.Compressions.Core.Algorithms
 
                 if (!groups[LettersGroupName].Success || !groups[DigitsGroupName].Success)
                 {
-                    throw new InputStringValidateException($"Ошибка чтения закодированной строки");
+                    throw new InputStringValidateException($"Ошибка чтения закодированной строки: {match.Value}");
                 }
             }
 
@@ -76,13 +78,10 @@ namespace LZ.Compressions.Core.Algorithms
         private static (char ch, int repeats) GetPair(Match match)
         {
             var letters = match.Groups[1].Value;
-
             if (letters.Length > 1)
-                throw new InputStringValidateException($"Пара имеет более одного символа для повторения: {letters}");
+                throw new InputStringValidateException($"Пара имеет более одного символа для повторения: {match.Value}");
 
-            var repeats = int.Parse(match.Value[^1..]);
-
-            return (letters[0], repeats);
+            return (letters[0], int.Parse(match.Value[^1..]));
         }
     }
 }
