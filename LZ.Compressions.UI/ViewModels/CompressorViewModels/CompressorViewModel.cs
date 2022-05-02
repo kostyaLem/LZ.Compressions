@@ -45,8 +45,6 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
             set { SetValue(value, nameof(ElapsedTime)); }
         }
 
-        public abstract bool CanShowReadableView { get; }
-
         public virtual void CompressData()
         {
             _compressor.ValidateBeforeCompress(DecompressedString);

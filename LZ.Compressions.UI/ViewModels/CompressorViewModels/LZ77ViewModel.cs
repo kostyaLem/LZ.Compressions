@@ -7,7 +7,6 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
     {
         public override string Title => "LZ77";
         public override string Decryption => "Lempel Ziv 77";
-        public override bool CanShowReadableView => true;
 
         public LZ77ViewModel(LZ77Compressor compressor, ITimerService timer) : base(compressor, timer)
         {
