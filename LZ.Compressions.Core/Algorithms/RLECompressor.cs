@@ -1,128 +1,88 @@
-﻿using LZ.Compressions.Core.Converters;
-using LZ.Compressions.Core.Exceptions;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using LZ.Compressions.Core.Exceptions;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LZ.Compressions.Core.Algorithms
 {
     public class RLECompressor : ITextCompressor
     {
-        private const string Delimiter = " ";
+        private const string DigitsGroupName = "digits";
+        private const string LettersGroupName = "letters";
+        private readonly string PairPattern = @$"(?'{DigitsGroupName}'[a-zA-Z]+)?(?'{LettersGroupName}'\d+)?";
 
         public string Compress(string uncompressed)
         {
-            var uncompressedBytes = Encoding.UTF8.GetBytes(uncompressed);
-            var unrepeats = 0;
-            var unrepeatedBytes = new List<byte>();
+            var strBuilder = new StringBuilder();
 
-            var repeats = 1;
-            var compressedBytes = new List<byte>();
-
-            for (int i = 0; i < uncompressedBytes.Length; i++)
+            for (int i = 0; i < uncompressed.Length;)
             {
-                if (i + 1 < uncompressedBytes.Length
-                    && uncompressedBytes[i] == uncompressedBytes[i + 1]
-                    && repeats < 129)
+                var repeats = 1;
+
+                for (int j = i + 1; j < uncompressed.Length; j++)
                 {
-                    if (unrepeats > 0)
-                    {
-                        compressedBytes.Add((byte)(unrepeats - 1));
-                        compressedBytes.AddRange(unrepeatedBytes);
-                        unrepeatedBytes.Clear();
-                        unrepeats = 0;
-                    }
+                    if (uncompressed[j] == uncompressed[i])
+                        repeats++;
 
-                    repeats++;
+                    if (repeats == 1)
+                        break;
                 }
-                else
-                {
-                    if (repeats > 1)
-                    {
-                        var repeatsByte = (byte)(Convert.ToByte(repeats) - 2);
-                        var repeatBits = new BitArray(new[] { repeatsByte });
-                        repeatBits.Set(7, true);
-                        compressedBytes.Add(repeatBits.ToByte());
 
-                        var charBits = new BitArray(new[] { uncompressedBytes[i - 1] });
-                        compressedBytes.Add(charBits.ToByte());
-
-                        repeats = 1;
-                    }
-                    else
-                    {
-                        unrepeats++;
-                        unrepeatedBytes.Add(uncompressedBytes[i]);
-                    }
-                }
+                strBuilder.Append(repeats + uncompressed[i].ToString());
+                i += repeats;
             }
 
-            if (unrepeatedBytes.Count != 0)
-                compressedBytes.AddRange(unrepeatedBytes);
-
-            return string.Join(Delimiter, compressedBytes);
+            return strBuilder.ToString();
         }
 
         public string Decompress(string compressed)
         {
-            var bytes = compressed.Split(Delimiter).Select(x => Convert.ToByte(x)).ToArray();
-            var stringBuilder = new StringBuilder();
-
-            for (int i = 0; i < bytes.Length; i++)
+            var strBuilder = new StringBuilder();
+            var matches = Regex.Matches(compressed, PairPattern);
+            foreach (Match match in matches)
             {
-                if (bytes[i] > 127)
-                {
-                    var repeats = bytes[i] - 127 + 1;
-                    stringBuilder.Append(new string((char)bytes[i + 1], repeats));
-                    i++;
-                }
-                else
-                {
-                    var repeats = bytes[i] + 1;
-                    var sub = bytes.Skip(i + 1).Take(repeats);
-                    stringBuilder.Append(string.Join(string.Empty, sub.Select(x => (char)x)));
-                    i += repeats;
-                }
+                var (ch, repeats) = GetPair(match);
+                strBuilder.Append(ch, repeats);
             }
 
-            return stringBuilder.ToString();
+            return strBuilder.ToString();
         }
 
-        public string GetReadableView(string compressed)
-        {           
-            var bytes = compressed.Split(Delimiter).Select(x => Convert.ToChar(Convert.ToByte(x))).ToArray();
-
-            if ((bytes.Length * 2) % 2 != 0)
-                throw new Exception();
-
-            var items = new List<string>();
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                if (bytes[i] >= 128)
-                {
-                    var repeats = bytes[i] - 128 + 2;
-                    var ch = Convert.ToChar(bytes[i + 1]);
-                    items.Add($"{repeats}{ch}");
-                    i++;
-                }
-                else
-                {
-                    var ch = Convert.ToChar(bytes[i]);
-                    items.Add($"{ch}");
-                }
-            }
-
-            return string.Join(String.Empty, items);
-        }
-
-        public bool Validate(string input)
+        public bool ValidateBeforeCompress(string input)
         {
-            if (input.Any(x => x < 0 || x > 256))
-                throw new InputStringValidateException("Входная строка имеет недопустимые символы");
+            if (input.Any(char.IsDigit))
+                throw new InputStringValidateException("Входная строка содержит цифры");
 
             return true;
+        }
+
+        public bool ValidateBeforeDecompress(string input)
+        {
+            var matches = Regex.Matches(input, PairPattern);
+
+            foreach (Match match in matches)
+            {
+                var groups = match.Groups;
+
+                if (!groups[LettersGroupName].Success || !groups[DigitsGroupName].Success)
+                {
+                    throw new InputStringValidateException($"Ошибка чтения закодированной строки");
+                }
+            }
+
+            return true;
+        }
+
+        private static (char ch, int repeats) GetPair(Match match)
+        {
+            var letters = match.Groups[1].Value;
+
+            if (letters.Length > 1)
+                throw new InputStringValidateException($"Пара имеет более одного символа для повторения: {letters}");
+
+            var repeats = int.Parse(match.Value[^1..]);
+
+            return (letters[0], repeats);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 
         private void OnDataCompressed(object? sender, System.EventArgs e)
         {
-            ReadableView = _compressor.Compress(OutputString);
+            ReadableView = _compressor.Compress(CompressedString);
         }
     }
 }

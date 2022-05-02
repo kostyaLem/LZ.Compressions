@@ -22,21 +22,21 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
             _compressor = compressor;
             _timer = timer;
 
-            CompressCommand = new DelegateCommand(CompressData, !string.IsNullOrWhiteSpace(InputString));
-            DecompressCommand = new DelegateCommand(DecompressData, !string.IsNullOrWhiteSpace(OutputString));
+            CompressCommand = new DelegateCommand(CompressData, !string.IsNullOrWhiteSpace(DecompressedString));
+            DecompressCommand = new DelegateCommand(DecompressData, !string.IsNullOrWhiteSpace(CompressedString));
             ClearCommand = new DelegateCommand(ClearData);
         }
 
-        public string InputString
+        public string DecompressedString
         {
-            get { return GetValue<string>(nameof(InputString)); }
-            set { SetValue(value, nameof(InputString)); }
+            get { return GetValue<string>(nameof(DecompressedString)); }
+            set { SetValue(value, nameof(DecompressedString)); }
         }
 
-        public string OutputString
+        public string CompressedString
         {
-            get { return GetValue<string>(nameof(OutputString)); }
-            set { SetValue(value, nameof(OutputString)); }
+            get { return GetValue<string>(nameof(CompressedString)); }
+            set { SetValue(value, nameof(CompressedString)); }
         }
 
         public string ReadableView
@@ -55,27 +55,31 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 
         public virtual void CompressData()
         {
+            _compressor.ValidateBeforeCompress(DecompressedString);
+
             _timer.Start();
-            var compressed = _compressor.Compress(InputString);
+            var compressed = _compressor.Compress(DecompressedString);
 
             ElapsedTime = _timer.Stop();
-            OutputString = compressed;
+            CompressedString = compressed;
         }
 
         public virtual void DecompressData()
         {
+            _compressor.ValidateBeforeDecompress(CompressedString);
+
             _timer.Start();
-            var decompressed = _compressor.Decompress(OutputString);
+            var decompressed = _compressor.Decompress(CompressedString);
 
             ElapsedTime = _timer.Stop();
-            InputString = decompressed;
+            DecompressedString = decompressed;
         }
 
         public virtual void ClearData()
         {
             ElapsedTime = TimeSpan.Zero;
-            InputString = string.Empty;
-            OutputString = string.Empty;
+            DecompressedString = string.Empty;
+            CompressedString = string.Empty;
         }
     }
 }

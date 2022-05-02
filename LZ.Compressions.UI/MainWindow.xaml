@@ -142,7 +142,7 @@
                     VerticalContentAlignment="Top"
                     hc:BorderElement.CornerRadius="10,5,0,10"
                     hc:InfoElement.Placeholder="Введите строку для сжатия"
-                    Text="{Binding SelectedCompressorViewModel.InputString, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding SelectedCompressorViewModel.DecompressedString, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="Wrap"
                     VerticalScrollBarVisibility="Auto" />
 
@@ -154,7 +154,7 @@
                         VerticalContentAlignment="Top"
                         hc:BorderElement.CornerRadius="5,10,5,0"
                         hc:InfoElement.Placeholder="Введите строку для распаковки"
-                        Text="{Binding SelectedCompressorViewModel.OutputString, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding SelectedCompressorViewModel.CompressedString, UpdateSourceTrigger=PropertyChanged}"
                         TextWrapping="Wrap"
                         VerticalScrollBarVisibility="Auto" />
                 </DockPanel>
