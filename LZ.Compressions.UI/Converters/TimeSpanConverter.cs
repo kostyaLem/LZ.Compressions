@@ -20,11 +20,8 @@ namespace LZ.Compressions.UI.Converters
                 if (time.Milliseconds != 0)
                     strTime = strTime + time.Milliseconds + " мc.";
 
-                if (time.Ticks is > 0 and < 1000)
-                    strTime = "Меньше 1 мс.";
-
                 if (string.IsNullOrWhiteSpace(strTime))
-                    strTime = "0 м. 0 с. 0 мс.";
+                    strTime = "Мгновенно";
 
                 return strTime;
             }
@@ -38,5 +35,10 @@ namespace LZ.Compressions.UI.Converters
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider) => this;
+
+        private class TimeInfo
+        {
+
+        }
     }
 }

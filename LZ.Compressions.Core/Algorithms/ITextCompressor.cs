@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace LZ.Compressions.Core.Algorithms
+﻿namespace LZ.Compressions.Core.Algorithms
 {
-    public interface ITextCompressor
+    public interface ITextCompressor : IComperssorValidator<string>
     {
-        bool Validate(string input);
         string Compress(string uncompressed);
         string Decompress(string compressed);
     }

@@ -41,7 +41,12 @@ namespace LZ.Compressions.Core.Algorithms
             throw new NotImplementedException();
         }
 
-        public bool Validate(string input)
+        public bool ValidateBeforeCompress(string input)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ValidateBeforeDecompress(string input)
         {
             throw new NotImplementedException();
         }

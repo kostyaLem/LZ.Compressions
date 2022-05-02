@@ -88,12 +88,17 @@ namespace LZ.Compressions.Core.Algorithms
             return decompressed.ToString();
         }
 
-        public bool Validate(string input)
+        public bool ValidateBeforeCompress(string input)
         {
             if (input.Any(x => x < 0 || x > 256))
                 throw new InputStringValidateException("Входная строка имеет недопустимые символы");
 
             return true;
+        }
+
+        public bool ValidateBeforeDecompress(string input)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
