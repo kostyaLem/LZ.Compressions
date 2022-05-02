@@ -98,7 +98,7 @@
                         <Run
                             d:Text="5"
                             FontWeight="Bold"
-                            Text="{Binding SelectedCompressorViewModel.InputString, Converter={converters:InputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                            Text="{Binding SelectedCompressorViewModel.DecompressedString, Converter={converters:InputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
                     </TextBlock>
                     <Path
                         Width="16"
@@ -122,7 +122,7 @@
                         <Run
                             d:Text="5"
                             FontWeight="Bold"
-                            Text="{Binding SelectedCompressorViewModel.OutputString, Converter={converters:OutputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                            Text="{Binding SelectedCompressorViewModel.CompressedString, Converter={converters:OutputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
                     </TextBlock>
                     <Path
                         Width="16"

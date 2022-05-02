@@ -74,16 +74,6 @@ namespace LZ.Compressions.Core.Algorithms
             return strBuilder.ToString();
         }
 
-        public bool ValidateBeforeCompress(string input)
-        {
-            return true;
-        }
-
-        public bool ValidateBeforeDecompress(string input)
-        {
-            return true;
-        }
-
         private bool FindMaxPrefix(string s1, string s2, out (int, string) follow)
         {
             follow = (-1, string.Empty);
@@ -134,5 +124,8 @@ namespace LZ.Compressions.Core.Algorithms
             }
 
         }
+
+        public bool ValidateBeforeCompress(string input) => true;
+        public bool ValidateBeforeDecompress(string input) => true;
     }
 }
