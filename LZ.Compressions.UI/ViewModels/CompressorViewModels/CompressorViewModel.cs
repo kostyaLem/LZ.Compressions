@@ -39,12 +39,6 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
             set { SetValue(value, nameof(CompressedString)); }
         }
 
-        public string ReadableView
-        {
-            get { return GetValue<string>(nameof(ReadableView)); }
-            set { SetValue(value, nameof(ReadableView)); }
-        }
-
         public TimeSpan ElapsedTime
         {
             get { return GetValue<TimeSpan>(nameof(ElapsedTime)); }

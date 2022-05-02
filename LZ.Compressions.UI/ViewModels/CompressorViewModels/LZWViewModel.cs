@@ -11,7 +11,6 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 
         public LZWViewModel(LZWCompressor compressor, ITimerService timer) : base(compressor, timer)
         {
-
         }
     }
 }
