@@ -15,12 +15,6 @@ namespace LZ.Compressions.Core.Algorithms
             var left = new StringBuilder();
             var right = new StringBuilder(uncompressed);
 
-            //if (PreInit(uncompressed))
-            //{
-            //    var item = (0, 0, uncompressed[0]);
-            //    Enumerable.Range(0, 2).ToList().ForEach(x => items.Add(item));
-            //}
-
             for (int i = 0; i < uncompressed.Length; i++)
             {
                 if (FindMaxPrefix(left.ToString(), right.ToString(), out var follow))
@@ -76,7 +70,7 @@ namespace LZ.Compressions.Core.Algorithms
             {
                 for (int subLength = 1; subLength <= index; subLength++)
                 {
-                    var substr = s1[(index - 1)..];
+                    var substr = new string(s1.Reverse().Skip(s1.Length - index).Take(subLength).Reverse().ToArray()); //  s1[(s1.Length - subLength)..index];
 
                     for (int repeats = 1; repeats <= Math.Ceiling(s2.Length / (double)substr.Length); repeats++)
                     {
@@ -91,7 +85,14 @@ namespace LZ.Compressions.Core.Algorithms
                                 follow = (s1.Length - index + 1, repeatStr[..^1]);
                             }
                         }
+                        else
+                        {
+                            break;
+                        }
                     }
+
+                    if (follow.Item1 == -1)
+                        break;
                 }
             }
 
