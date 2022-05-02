@@ -5,7 +5,7 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 {
     public class LZ77ViewModel : CompressorViewModel
     {
-        private readonly IReadableCompressor _compressor;
+        private readonly ITextCompressor _compressor;
 
         public override string Title => "LZ77";
         public override string Decryption => "Lempel Ziv 77";
@@ -14,12 +14,11 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
         public LZ77ViewModel(LZ77Compressor compressor, ITimerService timer) : base(compressor, timer)
         {
             _compressor = compressor;
-            DataCompressed += OnDataCompressed;
         }
 
         private void OnDataCompressed(object? sender, System.EventArgs e)
         {
-            ReadableView = _compressor.GetReadableView(OutputString);
+            ReadableView = _compressor.Compress(OutputString);
         }
     }
 }

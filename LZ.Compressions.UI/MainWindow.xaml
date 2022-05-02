@@ -151,16 +151,6 @@
                     Grid.Column="2"
                     LastChildFill="True">
                     <hc:TextBox
-                        MinHeight="100"
-                        VerticalContentAlignment="Top"
-                        hc:BorderElement.CornerRadius="0,5,10,0"
-                        hc:TitleElement.Title="Читаемый вид"
-                        DockPanel.Dock="Bottom"
-                        IsReadOnly="True"
-                        Text="{Binding SelectedCompressorViewModel.ReadableView}"
-                        TextWrapping="Wrap"
-                        Visibility="{Binding SelectedCompressorViewModel.CanShowReadableView, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <hc:TextBox
                         VerticalContentAlignment="Top"
                         hc:BorderElement.CornerRadius="5,10,5,0"
                         hc:InfoElement.Placeholder="Введите строку для распаковки"

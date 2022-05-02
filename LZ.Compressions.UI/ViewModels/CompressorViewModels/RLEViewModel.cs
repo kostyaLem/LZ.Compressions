@@ -3,9 +3,9 @@ using LZ.Compressions.UI.Services;
 
 namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 {
-    public class RLEViewModel : CompressorViewModel
+    public sealed class RLEViewModel : CompressorViewModel
     {
-        private readonly IReadableCompressor _readableCompressor;
+        private readonly ITextCompressor _compressor;
 
         public override string Title => "RLE";
         public override string Decryption => "Run Lenth Encode";
@@ -14,13 +14,12 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 
         public RLEViewModel(RLECompressor compressor, ITimerService timer) : base(compressor, timer)
         {
-            _readableCompressor = compressor;
-            DataCompressed += OnDataCompressed;
+            _compressor = compressor;
         }
 
         private void OnDataCompressed(object? sender, System.EventArgs e)
         {
-            ReadableView = _readableCompressor.GetReadableView(OutputString);
+            ReadableView = _compressor.Compress(OutputString);
         }
     }
 }

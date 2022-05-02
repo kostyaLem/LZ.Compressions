@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LZ.Compressions.Core.Algorithms
 {
-    public class LZ77Compressor : ITextCompressor, IReadableCompressor
+    public class LZ77Compressor : ITextCompressor
     {
         private const string Delimiter = " ";
 
@@ -17,7 +17,7 @@ namespace LZ.Compressions.Core.Algorithms
 
             for (int i = 0; i < uncompressed.Length; i++)
             {
-                if (FindMaxPrefix(left.ToString(), right.ToString(), out (int, string) follow))
+                if (FindMaxPrefix(left.ToString(), right.ToString(), out var follow))
                 {
                     left.Append(follow.Item2);
                     right.Remove(0, follow.Item2.Length);
@@ -41,35 +41,43 @@ namespace LZ.Compressions.Core.Algorithms
             throw new NotImplementedException();
         }
 
-        public string GetReadableView(string compressed)
+        public bool Validate(string input)
         {
-            var str = new StringBuilder();
-            var tuples = compressed.Split(Delimiter).ToArray();
-            for (int i = 0; i < tuples.Length; i++)
-            {
-                var offset = int.Parse(tuples[i]);
-                var length = int.Parse(tuples[i + 1]);
-                var ch = Convert.ToChar(Convert.ToByte(tuples[i + 2]));
-                str.AppendLine($"({offset},{length},{ch})");
-                i += 2;
-            }
-
-            return str.ToString();
+            throw new NotImplementedException();
         }
 
         private bool FindMaxPrefix(string s1, string s2, out (int, string) follow)
         {
             follow = (-1, string.Empty);
 
-            for (int i = 0; i < s2.Length; i++)
+            for (int index = s1.Length; index > 0; index--)
             {
-                var substr = s2[0..(i + 1)];
-                var index = s1.LastIndexOf(substr);
+                for (int subLength = 1; subLength <= index; subLength++)
+                {
+                    var substr = new string(s1.Reverse().Skip(s1.Length - index).Take(subLength).Reverse().ToArray()); //  s1[(s1.Length - subLength)..index];
 
-                if (index == -1)
-                    break;
+                    for (int repeats = 1; repeats <= Math.Ceiling(s2.Length / (double)substr.Length); repeats++)
+                    {
+                        var repeatStr = new string(Enumerable.Repeat(substr, repeats).SelectMany(x => x).ToArray());
 
-                follow = (s1.Length - index, substr);
+                        if (s2.StartsWith(repeatStr))
+                        {
+                            follow = (s1.Length - index + 1, repeatStr);
+
+                            if (repeatStr == s2)
+                            {
+                                follow = (s1.Length - index + 1, repeatStr[..^1]);
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    if (follow.Item1 == -1)
+                        break;
+                }
             }
 
             if (follow.Item1 != -1)
