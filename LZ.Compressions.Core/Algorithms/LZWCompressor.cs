@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using LZ.Compressions.Core.Exceptions;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -24,9 +25,10 @@ namespace LZ.Compressions.Core.Algorithms
             return DecompressData(parsedData);
         }
 
-        private IReadOnlyList<int> CompressData(string uncompressed)
+        public static IReadOnlyList<int> CompressData(string uncompressed)
         {
-            var dictionary = new Dictionary<string, int>();
+            // build the dictionary
+            Dictionary<string, int> dictionary = new Dictionary<string, int>();
             for (int i = 0; i < 256; i++)
                 dictionary.Add(((char)i).ToString(), i);
 
@@ -50,20 +52,22 @@ namespace LZ.Compressions.Core.Algorithms
                 }
             }
 
+            // write remaining output if necessary
             if (!string.IsNullOrEmpty(w))
                 compressed.Add(dictionary[w]);
 
             return compressed;
         }
 
-        private string DecompressData(IReadOnlyList<int> compressed)
+        public static string DecompressData(IReadOnlyList<int> compressed)
         {
-            var dictionary = new Dictionary<int, string>();
+            // build the dictionary
+            Dictionary<int, string> dictionary = new Dictionary<int, string>();
             for (int i = 0; i < 256; i++)
                 dictionary.Add(i, ((char)i).ToString());
 
-            var w = dictionary[compressed[0]];
-            var decompressed = new StringBuilder(w);
+            string w = dictionary[compressed[0]];
+            StringBuilder decompressed = new StringBuilder(w);
 
             foreach (int k in compressed.Skip(1))
             {
@@ -82,6 +86,14 @@ namespace LZ.Compressions.Core.Algorithms
             }
 
             return decompressed.ToString();
+        }
+
+        public bool Validate(string input)
+        {
+            if (input.Any(x => x < 0 || x > 256))
+                throw new InputStringValidateException("Входная строка имеет недопустимые символы");
+
+            return true;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LZ.Compressions.Core.Converters;
+using LZ.Compressions.Core.Exceptions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace LZ.Compressions.Core.Algorithms
 {
-    public class RLECompressor : ITextCompressor, IReadableCompressor
+    public class RLECompressor : ITextCompressor
     {
         private const string Delimiter = " ";
 
@@ -114,6 +115,14 @@ namespace LZ.Compressions.Core.Algorithms
             }
 
             return string.Join(String.Empty, items);
+        }
+
+        public bool Validate(string input)
+        {
+            if (input.Any(x => x < 0 || x > 256))
+                throw new InputStringValidateException("Входная строка имеет недопустимые символы");
+
+            return true;
         }
     }
 }

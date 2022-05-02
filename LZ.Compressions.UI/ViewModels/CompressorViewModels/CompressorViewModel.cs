@@ -17,8 +17,6 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
         public DelegateCommand DecompressCommand { get; }
         public DelegateCommand ClearCommand { get; }
 
-        public event EventHandler DataCompressed;
-
         public CompressorViewModel(ITextCompressor compressor, ITimerService timer)
         {
             _compressor = compressor;
@@ -62,8 +60,6 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 
             ElapsedTime = _timer.Stop();
             OutputString = compressed;
-
-            DataCompressed?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void DecompressData()

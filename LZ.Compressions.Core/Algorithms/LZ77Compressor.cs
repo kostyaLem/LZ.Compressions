@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LZ.Compressions.Core.Algorithms
 {
-    public class LZ77Compressor : ITextCompressor, IReadableCompressor
+    public class LZ77Compressor : ITextCompressor
     {
         private const string Delimiter = " ";
 
@@ -39,22 +39,6 @@ namespace LZ.Compressions.Core.Algorithms
         public string Decompress(string compressed)
         {
             throw new NotImplementedException();
-        }
-
-        public string GetReadableView(string compressed)
-        {
-            var str = new StringBuilder();
-            var tuples = compressed.Split(Delimiter).ToArray();
-            for (int i = 0; i < tuples.Length; i++)
-            {
-                var offset = int.Parse(tuples[i]);
-                var length = int.Parse(tuples[i + 1]);
-                var ch = Convert.ToChar(Convert.ToByte(tuples[i + 2]));
-                str.AppendLine($"({offset},{length},{ch})");
-                i += 2;
-            }
-
-            return str.ToString();
         }
 
         public bool Validate(string input)
@@ -98,16 +82,6 @@ namespace LZ.Compressions.Core.Algorithms
 
             if (follow.Item1 != -1)
                 return true;
-
-            return false;
-        }
-
-        private bool PreInit(string uncompressed)
-        {
-            if (uncompressed.Length == 2 && uncompressed.Distinct().Count() == 1)
-            {
-                return true;
-            }
 
             return false;
         }
