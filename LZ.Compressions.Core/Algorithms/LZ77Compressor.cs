@@ -1,13 +1,19 @@
-﻿using System;
+﻿using LZ.Compressions.Core.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LZ.Compressions.Core.Algorithms
 {
     public class LZ77Compressor : ITextCompressor
     {
         private const string Delimiter = " ";
+        private const string Num1GroupName = "d1";
+        private const string Num2GroupName = "d2";
+        private const string LetterGroupName = "l";
+        private readonly string PairPattern = $@"(?'{Num1GroupName}'\d)? (?'{Num2GroupName}'\d)? (?'{LetterGroupName}'.)?\s?";
 
         public string Compress(string uncompressed)
         {
@@ -33,22 +39,49 @@ namespace LZ.Compressions.Core.Algorithms
                 right.Remove(0, 1);
             }
 
-            return string.Join(Delimiter, items.Select(x => $"{x.Item1} {x.Item2} {(byte)x.Item3}"));
+            return string.Join(Delimiter, items.Select(x => $"{x.Item1} {x.Item2} {x.Item3}"));
         }
 
         public string Decompress(string compressed)
         {
-            throw new NotImplementedException();
+            var strBuilder = new StringBuilder();
+
+            var matches = Regex.Matches(compressed, PairPattern);
+            foreach (Match match in matches)
+            {
+                ValidateMatch(match);
+
+                var num1 = int.Parse(match.Groups[Num1GroupName].Value);
+                var num2 = int.Parse(match.Groups[Num2GroupName].Value);
+                var letter = match.Groups[LetterGroupName].Value;
+
+                if (num1 == 0 && num2 == 0)
+                {
+                    strBuilder.Append(letter);
+                }
+                else if (num1 + num2 > strBuilder.Length)
+                {
+                    strBuilder.Append(strBuilder[strBuilder.Length - num1], num2);
+                    strBuilder.Append(letter);
+                }
+                else
+                {
+                    var lastStr = strBuilder.ToString()[(strBuilder.Length - num1)..num2];
+                    strBuilder.Append(lastStr);
+                }
+            }
+
+            return strBuilder.ToString();
         }
 
         public bool ValidateBeforeCompress(string input)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public bool ValidateBeforeDecompress(string input)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         private bool FindMaxPrefix(string s1, string s2, out (int, string) follow)
@@ -89,6 +122,17 @@ namespace LZ.Compressions.Core.Algorithms
                 return true;
 
             return false;
+        }
+
+        private static void ValidateMatch(Match match)
+        {
+            if (!match.Groups[Num1GroupName].Success
+                || !match.Groups[Num2GroupName].Success
+                || !match.Groups[LetterGroupName].Success)
+            {
+                throw new InputStringValidateException($"Ошибка при разборе строки: {match.Value}");
+            }
+
         }
     }
 }
