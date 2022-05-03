@@ -108,7 +108,7 @@
                         Data="{StaticResource InfoGeometry}"
                         Fill="{DynamicResource DarkMaskBrush}"
                         Stretch="Uniform"
-                        ToolTip="Количество символов подсчитывается как обычно"
+                        ToolTip="Учитываются все символы включая пробелы"
                         ToolTipService.InitialShowDelay="0" />
                 </StackPanel>
 
@@ -132,7 +132,7 @@
                         Data="{StaticResource InfoGeometry}"
                         Fill="{DynamicResource DarkMaskBrush}"
                         Stretch="Uniform"
-                        ToolTip="Символы отображаются в виде байтов (0-255) и разделены пробелом (не учитывается) для читаемости.&#x0a;Если алгоритм поддерживает читаемый режим, то он отобразится справа внизу."
+                        ToolTip="Учитываются все символы включая пробелы"
                         ToolTipService.InitialShowDelay="0" />
                 </StackPanel>
 
