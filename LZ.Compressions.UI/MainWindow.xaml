@@ -94,11 +94,11 @@
                     Margin="0,0,0,2"
                     Orientation="Horizontal">
                     <TextBlock>
-                        <Run Text="Символов:" />
+                        <Run Text="Символов: " />
                         <Run
-                            d:Text="5"
+                            d:Text="0"
                             FontWeight="Bold"
-                            Text="{Binding SelectedCompressorViewModel.DecompressedString, Converter={converters:InputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                            Text="{Binding SelectedCompressorViewModel.DecompressedString.Length, Mode=OneWay, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}" />
                     </TextBlock>
                     <Path
                         Width="16"
@@ -118,11 +118,11 @@
                     Margin="0,0,0,2"
                     Orientation="Horizontal">
                     <TextBlock>
-                        <Run Text="Символов:" />
+                        <Run Text="Символов: " />
                         <Run
-                            d:Text="5"
+                            d:Text="0"
                             FontWeight="Bold"
-                            Text="{Binding SelectedCompressorViewModel.CompressedString, Converter={converters:OutputStringLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                            Text="{Binding SelectedCompressorViewModel.CompressedString.Length, FallbackValue=0, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
                     </TextBlock>
                     <Path
                         Width="16"
