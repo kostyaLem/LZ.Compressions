@@ -13,6 +13,9 @@ namespace LZ.Compressions.UI.Converters
             {
                 var strTime = string.Empty;
 
+                if (time.Ticks == 0)
+                    return strTime;
+
                 if (time.Minutes != 0)
                     strTime = strTime + time.Minutes + " м.";
                 if (time.Seconds != 0)
