@@ -13,7 +13,7 @@ namespace LZ.Compressions.Core.Algorithms
         private const string Num1GroupName = "d1";
         private const string Num2GroupName = "d2";
         private const string LetterGroupName = "l";
-        private readonly string PairPattern = $@"(?'{Num1GroupName}'\d)? (?'{Num2GroupName}'\d)? (?'{LetterGroupName}'.)?\s?";
+        private readonly string PairPattern = $@"(?'{Num1GroupName}'\d+)? (?'{Num2GroupName}'\d+)? (?'{LetterGroupName}'.)?\s?";
 
         public string Compress(string uncompressed)
         {

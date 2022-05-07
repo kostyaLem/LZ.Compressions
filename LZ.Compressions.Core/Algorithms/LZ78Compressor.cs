@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LZ.Compressions.Core.Algorithms
 {
@@ -11,7 +12,7 @@ namespace LZ.Compressions.Core.Algorithms
         private const string Num1GroupName = "d1";
         private const string Num2GroupName = "d2";
         private const string LetterGroupName = "l";
-        private readonly string PairPattern = $@"(?'{Num1GroupName}'\d)?,(?'{Num2GroupName}'\d)?,(?'{LetterGroupName}'.)?\s?";
+        private readonly string PairPattern = $@"(?'{Num1GroupName}'\d+)?,(?'{Num2GroupName}'\d+)?,(?'{LetterGroupName}'.)?\s?";
 
         public string Compress(string uncompressed)
         {
@@ -25,12 +26,12 @@ namespace LZ.Compressions.Core.Algorithms
                 {
                     if (right.ToString() == follow.Str)
                     {
-                        items.Add((left.Length - follow.Index, follow.Str.Length, ' '));
+                        items.Add((follow.Index, follow.Str.Length, ' '));
                     }
                     else
                     {
                         var newCh = right[follow.Str.Length];
-                        items.Add((left.Length - follow.Index, follow.Str.Length, newCh));
+                        items.Add((follow.Index, follow.Str.Length, newCh));
                         left.Append(follow.Str + newCh);
                         right.Remove(0, follow.Str.Length + 1);
                     }
@@ -49,7 +50,29 @@ namespace LZ.Compressions.Core.Algorithms
 
         public string Decompress(string compressed)
         {
-            throw new NotImplementedException();
+            var strBuilder = new StringBuilder();
+
+            var matches = Regex.Matches(compressed, PairPattern);
+            foreach (Match match in matches)
+            {
+                // ValidateMatch(match);
+
+                var num1 = int.Parse(match.Groups[Num1GroupName].Value);
+                var num2 = int.Parse(match.Groups[Num2GroupName].Value);
+                var letter = match.Groups[LetterGroupName].Value;
+
+                if (num1 == 0 && num2 == 0)
+                {
+                    strBuilder.Append(letter);
+                }
+                else
+                {
+                    strBuilder.Append(strBuilder.ToString().Substring(num1, num2));
+                    strBuilder.Append(letter);
+                }
+            }
+
+            return strBuilder.ToString();
         }
 
         private bool FindMaxPrefix(string left, string right, out (int Index, string Str) follow)
