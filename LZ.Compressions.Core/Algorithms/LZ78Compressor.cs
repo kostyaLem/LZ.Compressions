@@ -15,48 +15,28 @@ namespace LZ.Compressions.Core.Algorithms
             var left = new StringBuilder();
             var right = new StringBuilder(uncompressed);
 
-            items.Add((0, 0, uncompressed[0]));
-            left.Append(uncompressed[0]);
-            right.Remove(0, 1);
-
-            for (int i = 1; i < uncompressed.Length; i++)
+            for (int i = 0; i < uncompressed.Length; i++)
             {
-                var str = string.Empty;
-                var index = -1;
-                var count = 0;
-
-                for (int end = 0; end < right.Length; end++)
+                if (FindMaxPrefix(left.ToString(), right.ToString(), out (int Index, string Str) follow))
                 {
-                    str = right.ToString()[..(end + 1)];
-                    var tempIndex = left.ToString().LastIndexOf(str);
+                    if (follow.Str == right.ToString())
+                    {
+                        items.Add((left.Length - follow.Index, follow.Str.Length, ' '));
+                    }
+                    else
+                    {
+                        items.Add((left.Length - follow.Index, follow.Str.Length, right.ToString()[follow.Str.Length]));
+                    }
 
-                    if (tempIndex == -1)
-                        break;
-
-                    index = tempIndex;
-                    count = str.Length;
+                    left.Append(follow.Str);
+                    right.Remove(0, Math.Min(right.Length, follow.Str.Length + 1));
+                    i += follow.Str.Length;
                 }
-
-                if (index == -1)
+                else
                 {
                     items.Add((0, 0, right[0]));
                     left.Append(right[0]);
                     right.Remove(0, 1);
-                }
-                else
-                {
-                    if (str == right.ToString())
-                    {
-                        items.Add((left.Length - index, count, ' '));
-                    }
-                    else
-                    {
-                        items.Add((left.Length - index, count, str[^1]));
-                    }
-
-                    left.Append(str);
-                    right.Remove(0, Math.Min(right.Length, count + 1));
-                    i += count;
                 }
             }
 
@@ -66,6 +46,25 @@ namespace LZ.Compressions.Core.Algorithms
         public string Decompress(string compressed)
         {
             throw new NotImplementedException();
+        }
+
+        private bool FindMaxPrefix(string left, string right, out (int Index, string Str) follow)
+        {
+            follow = (-1, string.Empty);
+
+            for (int end = 0; end < right.Length; end++)
+            {
+                var tempStr = right.ToString()[..(end + 1)];
+                var tempIndex = left.ToString().LastIndexOf(tempStr);
+
+                if (tempIndex == -1)
+                    break;
+
+                follow.Str = tempStr;
+                follow.Index = tempIndex;
+            }
+
+            return follow.Index != -1;
         }
 
         public void ValidateBeforeCompress(string input)
