@@ -8,6 +8,10 @@ namespace LZ.Compressions.Core.Algorithms
     public class LZ78Compressor : ITextCompressor
     {
         private const string Delimiter = " ";
+        private const string Num1GroupName = "d1";
+        private const string Num2GroupName = "d2";
+        private const string LetterGroupName = "l";
+        private readonly string PairPattern = $@"(?'{Num1GroupName}'\d)?,(?'{Num2GroupName}'\d)?,(?'{LetterGroupName}'.)?\s?";
 
         public string Compress(string uncompressed)
         {
