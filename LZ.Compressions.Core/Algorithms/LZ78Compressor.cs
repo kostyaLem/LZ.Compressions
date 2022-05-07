@@ -45,14 +45,22 @@ namespace LZ.Compressions.Core.Algorithms
                 }
                 else
                 {
-                    items.Add((left.Length - index, count, str[^1]));
-                    left.Append(right.ToString()[0..(count + 1)]);
-                    right.Remove(0, count + 1);
+                    if (str == right.ToString())
+                    {
+                        items.Add((left.Length - index, count, ' '));
+                    }
+                    else
+                    {
+                        items.Add((left.Length - index, count, str[^1]));
+                    }
+
+                    left.Append(str);
+                    right.Remove(0, Math.Min(right.Length, count + 1));
                     i += count;
                 }
             }
 
-            return string.Join(Delimiter, items.Select(x => $"{x.Item1} {x.Item2} {x.Item3}"));
+            return string.Join(Delimiter, items.Select(x => $"{x.Item1},{x.Item2},{x.Item3}"));
         }
 
         public string Decompress(string compressed)
@@ -62,12 +70,12 @@ namespace LZ.Compressions.Core.Algorithms
 
         public void ValidateBeforeCompress(string input)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public void ValidateBeforeDecompress(string input)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }
