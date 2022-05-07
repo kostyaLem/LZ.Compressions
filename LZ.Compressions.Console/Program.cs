@@ -9,10 +9,7 @@ namespace LZ.Compressions
     {
         static void Main(string[] args)
         {
-            var str1 = "aaaaaaQWaQQQQQQQwwwwwaWWWWWZZZZZaa";
-            var str2 = "aaaaaaQWaQQQQQQQwwwwwaWWWWWZZZZZaa";
-
-            new RLECompressor().Decompress(null);
+            new LZ78Compressor().Compress("ababcbababaa");
         }
     }
 }

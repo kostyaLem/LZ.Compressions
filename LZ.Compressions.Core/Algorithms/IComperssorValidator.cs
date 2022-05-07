@@ -2,7 +2,7 @@
 {
     public interface IComperssorValidator<T>
     {
-        bool ValidateBeforeCompress(T input);
-        bool ValidateBeforeDecompress(T input);
+        void ValidateBeforeCompress(T input);
+        void ValidateBeforeDecompress(T input);
     }
 }
