@@ -25,10 +25,10 @@ namespace LZ.Compressions.UI
 
             serviceCollection.AddTransient<ITimerService, TimerService>();
 
-
             serviceCollection.AddSingleton<LZWCompressor>();
             serviceCollection.AddSingleton<RLECompressor>();
             serviceCollection.AddSingleton<LZ77Compressor>();
+            serviceCollection.AddSingleton<LZ78Compressor>();
 
             serviceCollection.AddSingleton<LZWViewModel>();
             serviceCollection.AddSingleton<LZ77ViewModel>();

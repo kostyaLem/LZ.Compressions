@@ -48,17 +48,13 @@ namespace LZ.Compressions.Core.Algorithms
             return strBuilder.ToString();
         }
 
-        public bool ValidateBeforeCompress(string input)
+        public void ValidateBeforeCompress(string input)
         {
             if (input.Any(char.IsLetter))
-            {
                 throw new InputStringValidateException("Входная строка содержит не буквы");
-            }
-
-            return true;
         }
 
-        public bool ValidateBeforeDecompress(string input)
+        public void ValidateBeforeDecompress(string input)
         {
             var matches = Regex.Matches(input, PairPattern);
 
@@ -71,8 +67,6 @@ namespace LZ.Compressions.Core.Algorithms
                     throw new InputStringValidateException($"Ошибка чтения закодированной строки: {match.Value}");
                 }
             }
-
-            return true;
         }
 
         private static (char ch, int repeats) GetPair(Match match)

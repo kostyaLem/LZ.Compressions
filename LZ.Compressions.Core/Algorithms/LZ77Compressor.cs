@@ -125,7 +125,7 @@ namespace LZ.Compressions.Core.Algorithms
 
         }
 
-        public bool ValidateBeforeCompress(string input) => true;
-        public bool ValidateBeforeDecompress(string input) => true;
+        public void ValidateBeforeCompress(string input) { }
+        public void ValidateBeforeDecompress(string input) { }
     }
 }
