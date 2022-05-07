@@ -19,18 +19,19 @@ namespace LZ.Compressions.Core.Algorithms
             {
                 if (FindMaxPrefix(left.ToString(), right.ToString(), out (int Index, string Str) follow))
                 {
-                    if (follow.Str == right.ToString())
+                    if (right.ToString() == follow.Str)
                     {
                         items.Add((left.Length - follow.Index, follow.Str.Length, ' '));
+                        i += follow.Str.Length;
                     }
                     else
                     {
-                        items.Add((left.Length - follow.Index, follow.Str.Length, right.ToString()[follow.Str.Length]));
+                        var newCh = right[follow.Str.Length];
+                        items.Add((left.Length - follow.Index, follow.Str.Length, newCh));
+                        left.Append(follow.Str + newCh);
+                        right.Remove(0, follow.Str.Length + 1);
+                        i += follow.Str.Length;
                     }
-
-                    left.Append(follow.Str);
-                    right.Remove(0, Math.Min(right.Length, follow.Str.Length + 1));
-                    i += follow.Str.Length;
                 }
                 else
                 {
