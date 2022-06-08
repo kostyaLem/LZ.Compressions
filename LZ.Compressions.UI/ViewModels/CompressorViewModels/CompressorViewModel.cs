@@ -22,8 +22,8 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
             _compressor = compressor;
             _timer = timer;
 
-            CompressCommand = new DelegateCommand(CompressData, !string.IsNullOrWhiteSpace(DecompressedString));
-            DecompressCommand = new DelegateCommand(DecompressData, !string.IsNullOrWhiteSpace(CompressedString));
+            CompressCommand = new DelegateCommand(CompressData, () => !string.IsNullOrWhiteSpace(DecompressedString));
+            DecompressCommand = new DelegateCommand(DecompressData, () => !string.IsNullOrWhiteSpace(CompressedString));
             ClearCommand = new DelegateCommand(ClearData);
         }
 

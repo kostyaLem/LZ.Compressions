@@ -1,4 +1,4 @@
-﻿using System;
+﻿using LZ.Compressions.Core.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +11,8 @@ namespace LZ.Compressions.Core.Algorithms
         private const string Delimiter = " ";
         private const string Num1GroupName = "d1";
         private const string Num2GroupName = "d2";
-        private const string LetterGroupName = "l";
-        private readonly string PairPattern = $@"(?'{Num1GroupName}'\d+)?,(?'{Num2GroupName}'\d+)?,(?'{LetterGroupName}'.)?\s?";
+        private const string LettersGroupName = "l";
+        private readonly string PairPattern = $@"(?'{Num1GroupName}'\d+)?,(?'{Num2GroupName}'\d+)?,(?'{LettersGroupName}'.)?\s?";
 
         public string Compress(string uncompressed)
         {
@@ -59,7 +59,7 @@ namespace LZ.Compressions.Core.Algorithms
 
                 var num1 = int.Parse(match.Groups[Num1GroupName].Value);
                 var num2 = int.Parse(match.Groups[Num2GroupName].Value);
-                var letter = match.Groups[LetterGroupName].Value;
+                var letter = match.Groups[LettersGroupName].Value;
 
                 if (num1 == 0 && num2 == 0)
                 {
@@ -94,14 +94,23 @@ namespace LZ.Compressions.Core.Algorithms
             return follow.Index != -1;
         }
 
-        public void ValidateBeforeCompress(string input)
-        {
-            //throw new NotImplementedException();
-        }
+        public void ValidateBeforeCompress(string input) { }
 
         public void ValidateBeforeDecompress(string input)
         {
-            //throw new NotImplementedException();
+            var matches = Regex.Matches(input, PairPattern);
+
+            foreach (Match match in matches)
+            {
+                var groups = match.Groups;
+
+                if (!groups[LettersGroupName].Success
+                    || !groups[Num1GroupName].Success
+                    || !groups[Num2GroupName].Success)
+                {
+                    throw new InputStringValidateException($"Ошибка чтения закодированной строки: {match.Value}");
+                }
+            }
         }
     }
 }
