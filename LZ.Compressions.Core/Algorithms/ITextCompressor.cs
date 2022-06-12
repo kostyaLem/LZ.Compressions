@@ -1,8 +1,10 @@
-﻿namespace LZ.Compressions.Core.Algorithms
+﻿using LZ.Compressions.Core.Models;
+
+namespace LZ.Compressions.Core.Algorithms
 {
     public interface ITextCompressor : IComperssorValidator<string>
     {
-        string Compress(string uncompressed);
+        CompressResult Compress(string uncompressed);
         string Decompress(string compressed);
     }
 }

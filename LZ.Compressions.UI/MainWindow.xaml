@@ -56,8 +56,6 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-
-
         </Grid>
 
         <Grid Grid.Column="1" Margin="20,0,0,0">
@@ -123,6 +121,10 @@
                             d:Text="0"
                             FontWeight="Bold"
                             Text="{Binding SelectedCompressorViewModel.CompressedString.Length, FallbackValue=0, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Run
+                            d:Text="(0)"
+                            FontWeight="Bold"
+                            Text="{Binding SelectedCompressorViewModel.CompressedLength, StringFormat=(0), FallbackValue=0, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
                     </TextBlock>
                     <Path
                         Width="16"
@@ -132,7 +134,7 @@
                         Data="{StaticResource InfoGeometry}"
                         Fill="{DynamicResource DarkMaskBrush}"
                         Stretch="Uniform"
-                        ToolTip="Учитываются все символы включая пробелы"
+                        ToolTip="Все символы включая пробелы (Исключительно символы, участвующие в кодировании)"
                         ToolTipService.InitialShowDelay="0" />
                 </StackPanel>
 

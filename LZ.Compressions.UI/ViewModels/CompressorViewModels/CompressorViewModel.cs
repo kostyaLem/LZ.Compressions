@@ -39,6 +39,12 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
             set { SetValue(value, nameof(CompressedString)); }
         }
 
+        public int CompressedLength
+        {
+            get { return GetValue<int>(nameof(CompressedLength)); }
+            set { SetValue(value, nameof(CompressedLength)); }
+        }
+
         public TimeSpan ElapsedTime
         {
             get { return GetValue<TimeSpan>(nameof(ElapsedTime)); }
@@ -53,7 +59,7 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
             var compressed = _compressor.Compress(DecompressedString);
 
             ElapsedTime = _timer.Stop();
-            CompressedString = compressed;
+            (CompressedString, CompressedLength) = compressed;
         }
 
         public virtual void DecompressData()
@@ -72,6 +78,7 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
             ElapsedTime = TimeSpan.Zero;
             DecompressedString = string.Empty;
             CompressedString = string.Empty;
+            CompressedLength = 0;
         }
     }
 }

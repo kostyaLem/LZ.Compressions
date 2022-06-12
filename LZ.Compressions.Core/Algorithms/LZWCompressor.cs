@@ -1,4 +1,5 @@
 ﻿using LZ.Compressions.Core.Exceptions;
+using LZ.Compressions.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,23 +10,7 @@ namespace LZ.Compressions.Core.Algorithms
     {
         private const char Delimiter = ' ';
 
-        public string Compress(string uncompressed)
-        {
-            var compressedData = CompressData(uncompressed);
-
-            return string.Join(Delimiter, compressedData);
-        }
-
-        public string Decompress(string compressed)
-        {
-            var parsedData = compressed.Split(Delimiter)
-                .Select(int.Parse)
-                .ToArray();
-
-            return DecompressData(parsedData);
-        }
-
-        public static IReadOnlyList<int> CompressData(string uncompressed)
+        public CompressResult Compress(string uncompressed)
         {
             // build the dictionary
             Dictionary<string, int> dictionary = new Dictionary<string, int>();
@@ -56,20 +41,27 @@ namespace LZ.Compressions.Core.Algorithms
             if (!string.IsNullOrEmpty(w))
                 compressed.Add(dictionary[w]);
 
-            return compressed;
+            var compressedStr = string.Join(Delimiter, compressed);
+            var compressedLength = compressed.Count;
+
+            return new CompressResult(compressedStr, compressedLength);
         }
 
-        public static string DecompressData(IReadOnlyList<int> compressed)
+        public string Decompress(string compressed)
         {
+            var parsedData = compressed.Split(Delimiter)
+                .Select(int.Parse)
+                .ToArray();
+
             // build the dictionary
             Dictionary<int, string> dictionary = new Dictionary<int, string>();
             for (int i = 0; i < 256; i++)
                 dictionary.Add(i, ((char)i).ToString());
 
-            string w = dictionary[compressed[0]];
+            string w = dictionary[parsedData[0]];
             StringBuilder decompressed = new StringBuilder(w);
 
-            foreach (int k in compressed.Skip(1))
+            foreach (int k in parsedData.Skip(1))
             {
                 string entry = null;
                 if (dictionary.ContainsKey(k))
