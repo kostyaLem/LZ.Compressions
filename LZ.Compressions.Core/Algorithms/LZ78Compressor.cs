@@ -1,4 +1,5 @@
 ﻿using LZ.Compressions.Core.Exceptions;
+using LZ.Compressions.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace LZ.Compressions.Core.Algorithms
         private const string LettersGroupName = "l";
         private readonly string PairPattern = $@"(?'{Num1GroupName}'\d+)?,(?'{Num2GroupName}'\d+)?,(?'{LettersGroupName}'.)?\s?";
 
-        public string Compress(string uncompressed)
+        public CompressResult Compress(string uncompressed)
         {
             var items = new List<(int, int, char)>();
             var left = new StringBuilder();
@@ -45,7 +46,10 @@ namespace LZ.Compressions.Core.Algorithms
                 }
             }
 
-            return string.Join(Delimiter, items.Select(x => $"{x.Item1},{x.Item2},{x.Item3}"));
+            var compressedStr = string.Join(Delimiter, items.Select(x => $"{x.Item1},{x.Item2},{x.Item3}"));
+            var compressedLength = items.Count * 3;
+
+            return new CompressResult(compressedStr, compressedLength);
         }
 
         public string Decompress(string compressed)

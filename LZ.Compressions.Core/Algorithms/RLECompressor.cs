@@ -1,4 +1,5 @@
 ﻿using LZ.Compressions.Core.Exceptions;
+using LZ.Compressions.Core.Models;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,7 +12,7 @@ namespace LZ.Compressions.Core.Algorithms
         private const string LettersGroupName = "letters";
         private readonly string PairPattern = @$"(?'{DigitsGroupName}'[a-zA-Z]+)?(?'{LettersGroupName}'\d+)?";
 
-        public string Compress(string uncompressed)
+        public CompressResult Compress(string uncompressed)
         {
             var strBuilder = new StringBuilder();
 
@@ -32,7 +33,10 @@ namespace LZ.Compressions.Core.Algorithms
                 i += repeats;
             }
 
-            return strBuilder.ToString();
+            var compressedStr = strBuilder.ToString();
+            var compressedLength = compressedStr.Length;
+
+            return new CompressResult(compressedStr, compressedLength);
         }
 
         public string Decompress(string compressed)
