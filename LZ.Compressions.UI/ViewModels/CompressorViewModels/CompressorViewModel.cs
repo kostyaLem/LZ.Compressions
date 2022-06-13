@@ -7,14 +7,19 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 {
     public abstract class CompressorViewModel : ViewModelBase
     {
+        // Алгоритм сжатия текста
         private readonly ITextCompressor _compressor;
+        // Таймер для оценки времени выполнения
         private readonly ITimerService _timer;
 
         public abstract string Title { get; }
         public abstract string Decryption { get; }
-
+        
+        // Команда сжатия
         public DelegateCommand CompressCommand { get; }
+        // Команда распаковки
         public DelegateCommand DecompressCommand { get; }
+        // Команда сброса текста и статистики
         public DelegateCommand ClearCommand { get; }
 
         public CompressorViewModel(ITextCompressor compressor, ITimerService timer)
@@ -53,22 +58,28 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 
         public virtual void CompressData()
         {
+            // Вызывать проверку входной строки перед сжатием
             _compressor.ValidateBeforeCompress(DecompressedString);
 
+            // Запустить таймер и сжатие строки
             _timer.Start();
             var compressed = _compressor.Compress(DecompressedString);
 
+            // Вывести потраченное время и результат
             ElapsedTime = _timer.Stop();
             (CompressedString, CompressedLength) = compressed;
         }
 
         public virtual void DecompressData()
         {
+            // Вызывать проверку входной строки перед сжатием
             _compressor.ValidateBeforeDecompress(CompressedString);
 
+            // Запустить таймер и распаковку строки
             _timer.Start();
             var decompressed = _compressor.Decompress(CompressedString);
 
+            // Вывести потраченное время и результат
             ElapsedTime = _timer.Stop();
             DecompressedString = decompressed;
         }
