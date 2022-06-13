@@ -9,14 +9,14 @@ namespace LZ.Compressions.UI
 {
     public partial class App : Application
     {
-        public static ServiceProvider ServiceProvider;
+        private static ServiceProvider _serviceProvider;
 
         public App()
         {
             ConfigureServices();
         }
 
-        private void ConfigureServices()
+        private static void ConfigureServices()
         {
             var serviceCollection = new ServiceCollection();
 
@@ -40,13 +40,13 @@ namespace LZ.Compressions.UI
             serviceCollection.AddSingleton<CompressorViewModel, LZ78ViewModel>();
             serviceCollection.AddSingleton<CompressorViewModel, RLEViewModel>();
 
-            ServiceProvider = serviceCollection.BuildServiceProvider();
+            _serviceProvider = serviceCollection.BuildServiceProvider();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
-            mainWindow.DataContext = ServiceProvider.GetRequiredService<MainViewModel>();
+            var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+            mainWindow.DataContext = _serviceProvider.GetRequiredService<MainViewModel>();
             mainWindow.Show();
         }
     }

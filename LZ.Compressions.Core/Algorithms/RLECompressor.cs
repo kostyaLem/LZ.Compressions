@@ -20,6 +20,7 @@ namespace LZ.Compressions.Core.Algorithms
             {
                 var repeats = 1;
 
+                // Находим повторение подстроки в строке перебором
                 for (int j = i + 1; j < uncompressed.Length; j++)
                 {
                     if (uncompressed[j] == uncompressed[i])
@@ -29,6 +30,7 @@ namespace LZ.Compressions.Core.Algorithms
                         break;
                 }
 
+                // Добавляем повторяющуюся подстроку в результат {количество повторений, символ}
                 strBuilder.Append(repeats + uncompressed[i].ToString());
                 i += repeats;
             }
@@ -43,6 +45,7 @@ namespace LZ.Compressions.Core.Algorithms
         {
             var strBuilder = new StringBuilder();
             var matches = Regex.Matches(compressed, PairPattern);
+            // Разбор повторяющихся символов
             foreach (Match match in matches)
             {
                 var (ch, repeats) = GetPair(match);

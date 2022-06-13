@@ -12,13 +12,14 @@ namespace LZ.Compressions.Core.Algorithms
 
         public CompressResult Compress(string uncompressed)
         {
-            // build the dictionary
-            Dictionary<string, int> dictionary = new Dictionary<string, int>();
+            // Определяем словарь символов
+            var dictionary = new Dictionary<string, int>();
+            // Предзаполняем словарь дефолтными символами
             for (int i = 0; i < 256; i++)
                 dictionary.Add(((char)i).ToString(), i);
 
-            string w = string.Empty;
-            List<int> compressed = new List<int>();
+            var w = string.Empty;
+            var compressed = new List<int>();
 
             foreach (char c in uncompressed)
             {
@@ -29,18 +30,19 @@ namespace LZ.Compressions.Core.Algorithms
                 }
                 else
                 {
-                    // write w to output
+                    // Записываем подстроку в результат
                     compressed.Add(dictionary[w]);
-                    // wc is a new sequence; add it to the dictionary
+                    // Добавляем wv в словарь
                     dictionary.Add(wc, dictionary.Count);
                     w = c.ToString();
                 }
             }
 
-            // write remaining output if necessary
+            // Записываем оставшуюся часть в результат
             if (!string.IsNullOrEmpty(w))
                 compressed.Add(dictionary[w]);
 
+            // Разделяем сжатую строку пробелами
             var compressedStr = string.Join(Delimiter, compressed);
             var compressedLength = compressed.Count;
 
@@ -53,14 +55,16 @@ namespace LZ.Compressions.Core.Algorithms
                 .Select(int.Parse)
                 .ToArray();
 
-            // build the dictionary
-            Dictionary<int, string> dictionary = new Dictionary<int, string>();
+            // Определяем словарь символов
+            var dictionary = new Dictionary<int, string>();
+            // Предзаполняем словарь дефолтными символами
             for (int i = 0; i < 256; i++)
                 dictionary.Add(i, ((char)i).ToString());
 
-            string w = dictionary[parsedData[0]];
-            StringBuilder decompressed = new StringBuilder(w);
+            var w = dictionary[parsedData[0]];
+            var decompressed = new StringBuilder(w);
 
+            // Разбираем сжатую строку, доставая из словаря нужные символы
             foreach (int k in parsedData.Skip(1))
             {
                 string entry = null;
@@ -71,7 +75,8 @@ namespace LZ.Compressions.Core.Algorithms
 
                 decompressed.Append(entry);
 
-                // new sequence; add it to the dictionary
+                // Добавить новое повторение в словарь для использования
+                // в последующих циклах распаковки
                 dictionary.Add(dictionary.Count, w + entry[0]);
 
                 w = entry;

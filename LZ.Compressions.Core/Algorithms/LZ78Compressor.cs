@@ -23,15 +23,19 @@ namespace LZ.Compressions.Core.Algorithms
 
             for (int i = 0; i < uncompressed.Length; i++)
             {
+                // Найти повторяющиеся символы из правой части в левой части строки
                 if (FindMaxPrefix(left.ToString(), right.ToString(), out (int Index, string Str) follow))
                 {
                     if (right.ToString() == follow.Str)
                     {
+                        // Добавить повторение с пустым символом в конце, если строка закончена
                         items.Add((follow.Index, follow.Str.Length, ' '));
                     }
                     else
                     {
+                        // Выделить символ для добавления в конец
                         var newCh = right[follow.Str.Length];
+                        // Добавить повторение {индекс, длина сдвига, новый символ}
                         items.Add((follow.Index, follow.Str.Length, newCh));
                         left.Append(follow.Str + newCh);
                         right.Remove(0, follow.Str.Length + 1);
@@ -40,12 +44,14 @@ namespace LZ.Compressions.Core.Algorithms
                 }
                 else
                 {
+                    // Добавить 1 символ, если повторение не было найдено
                     items.Add((0, 0, right[0]));
                     left.Append(right[0]);
                     right.Remove(0, 1);
                 }
             }
 
+            // Соединям повторения в группы и разделяем пробелами
             var compressedStr = string.Join(Delimiter, items.Select(x => $"{x.Item1},{x.Item2},{x.Item3}"));
             var compressedLength = items.Count * 3;
 
@@ -79,18 +85,21 @@ namespace LZ.Compressions.Core.Algorithms
             return strBuilder.ToString();
         }
 
-        private bool FindMaxPrefix(string left, string right, out (int Index, string Str) follow)
+        private static bool FindMaxPrefix(string left, string right, out (int Index, string Str) follow)
         {
             follow = (-1, string.Empty);
 
             for (int end = 0; end < right.Length; end++)
             {
+                // Выделить подстроку из правой части от 0 до end
                 var tempStr = right.ToString()[..(end + 1)];
+                // Найти выделенную подстроку в левой части
                 var tempIndex = left.ToString().LastIndexOf(tempStr);
 
                 if (tempIndex == -1)
                     break;
 
+                // Вернуть индекс и найденную строку
                 follow.Str = tempStr;
                 follow.Index = tempIndex;
             }

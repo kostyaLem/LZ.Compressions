@@ -24,22 +24,26 @@ namespace LZ.Compressions.Core.Algorithms
 
             for (int i = 0; i < uncompressed.Length; i++)
             {
+                // Находим повторяющиеся символы из правой части строки в левой части
                 if (FindMaxPrefix(left.ToString(), right.ToString(), out var follow))
                 {
                     left.Append(follow.Item2);
                     right.Remove(0, follow.Item2.Length);
+                    // Добавить повторение {индекс, длина повторение, следующий символ}
                     items.Add((follow.Item1, follow.Item2.Length, right[0]));
                     left.Append(right[0]);
                     i += follow.Item2.Length;
                 }
                 else
                 {
+                    // Добавляем 1 символ из правой строки, если не нашли повторение
                     left.Append(uncompressed[i]);
                     items.Add((0, 0, uncompressed[i]));
                 }
                 right.Remove(0, 1);
             }
 
+            // Соединям повторения в группы и разделяем пробелами
             var compressedStr = string.Join(Delimiter, items.Select(x => $"{x.Item1} {x.Item2} {x.Item3}"));
             var compressedLength = items.Count * 3;
 
@@ -50,9 +54,11 @@ namespace LZ.Compressions.Core.Algorithms
         {
             var strBuilder = new StringBuilder();
 
+            // Разобрать сжатую строку в группы {число, число, символ}
             var matches = Regex.Matches(compressed, PairPattern);
             foreach (Match match in matches)
             {
+                // Проверка сжатой строки на валидный формат
                 ValidateMatch(match);
 
                 var num1 = int.Parse(match.Groups[Num1GroupName].Value);
@@ -61,15 +67,18 @@ namespace LZ.Compressions.Core.Algorithms
 
                 if (num1 == 0 && num2 == 0)
                 {
+                    // Добавить 1 символ, если нет повторений
                     strBuilder.Append(letter);
                 }
                 else if (num1 + num2 > strBuilder.Length)
                 {
+                    // Добавить n символов, превыщающие левое окно
                     strBuilder.Append(strBuilder[strBuilder.Length - num1], num2);
                     strBuilder.Append(letter);
                 }
                 else
                 {
+                    // Добавить n символов
                     var lastStr = strBuilder.ToString()[(strBuilder.Length - num1)..num2];
                     strBuilder.Append(lastStr);
                 }
@@ -78,18 +87,22 @@ namespace LZ.Compressions.Core.Algorithms
             return strBuilder.ToString();
         }
 
-        private bool FindMaxPrefix(string s1, string s2, out (int, string) follow)
+        private static bool FindMaxPrefix(string s1, string s2, out (int, string) follow)
         {
             follow = (-1, string.Empty);
 
+            // Проходимся по левой части строки
             for (int index = s1.Length; index > 0; index--)
             {
+                // Перебираем строки разной длины в левой части строки
                 for (int subLength = 1; subLength <= index; subLength++)
                 {
-                    var substr = new string(s1.Reverse().Skip(s1.Length - index).Take(subLength).Reverse().ToArray()); //  s1[(s1.Length - subLength)..index];
+                    var substr = new string(s1.Reverse().Skip(s1.Length - index).Take(subLength).Reverse().ToArray());
 
+                    // Находим повторение s2 в s1
                     for (int repeats = 1; repeats <= Math.Ceiling(s2.Length / (double)substr.Length); repeats++)
                     {
+                        // Создаём повторение подстроки для поиска в s2
                         var repeatStr = new string(Enumerable.Repeat(substr, repeats).SelectMany(x => x).ToArray());
 
                         if (s2.StartsWith(repeatStr))
@@ -107,11 +120,13 @@ namespace LZ.Compressions.Core.Algorithms
                         }
                     }
 
+                    // Если не нашли повторение
                     if (follow.Item1 == -1)
                         break;
                 }
             }
 
+            // Если не нашли повторение
             if (follow.Item1 != -1)
                 return true;
 
@@ -126,7 +141,6 @@ namespace LZ.Compressions.Core.Algorithms
             {
                 throw new InputStringValidateException($"Ошибка при разборе строки: {match.Value}");
             }
-
         }
 
         public void ValidateBeforeCompress(string input) { }
