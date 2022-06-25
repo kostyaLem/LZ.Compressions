@@ -1,7 +1,9 @@
 ﻿using DevExpress.Mvvm;
 using LZ.Compressions.Core.Algorithms;
+using LZ.Compressions.Core.Exceptions;
 using LZ.Compressions.UI.Services;
 using System;
+using System.Windows;
 
 namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 {
@@ -14,7 +16,7 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 
         public abstract string Title { get; }
         public abstract string Decryption { get; }
-        
+
         // Команда сжатия
         public DelegateCommand CompressCommand { get; }
         // Команда распаковки
@@ -58,30 +60,54 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 
         public virtual void CompressData()
         {
-            // Вызывать проверку входной строки перед сжатием
-            _compressor.ValidateBeforeCompress(DecompressedString);
-
             // Запустить таймер и сжатие строки
             _timer.Start();
-            var compressed = _compressor.Compress(DecompressedString);
 
-            // Вывести потраченное время и результат
-            ElapsedTime = _timer.Stop();
-            (CompressedString, CompressedLength) = compressed;
+            try
+            {
+                // Вызывать проверку входной строки перед сжатием
+                _compressor.ValidateBeforeCompress(DecompressedString);
+
+                var compressed = _compressor.Compress(DecompressedString);
+
+                // Вывести потраченное время и результат
+                (CompressedString, CompressedLength) = compressed;
+            }
+            catch (InputStringValidateException e)
+            {
+                (CompressedString, CompressedLength) = (string.Empty, 0);
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                ElapsedTime = _timer.Stop();
+            }
         }
 
         public virtual void DecompressData()
         {
-            // Вызывать проверку входной строки перед сжатием
-            _compressor.ValidateBeforeDecompress(CompressedString);
-
-            // Запустить таймер и распаковку строки
+            // Запустить таймер и сжатие строки
             _timer.Start();
-            var decompressed = _compressor.Decompress(CompressedString);
 
-            // Вывести потраченное время и результат
-            ElapsedTime = _timer.Stop();
-            DecompressedString = decompressed;
+            try
+            {
+                // Вызывать проверку входной строки перед сжатием
+                _compressor.ValidateBeforeDecompress(CompressedString);
+
+                var decompressed = _compressor.Decompress(CompressedString);
+
+                // Вывести потраченное время и результат
+                DecompressedString = decompressed;
+            }
+            catch (InputStringValidateException e)
+            {
+                DecompressedString = string.Empty;
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                ElapsedTime = _timer.Stop();
+            }
         }
 
         public virtual void ClearData()

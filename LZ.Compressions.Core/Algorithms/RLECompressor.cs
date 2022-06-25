@@ -80,7 +80,9 @@ namespace LZ.Compressions.Core.Algorithms
         {
             var letters = match.Groups[1].Value;
             if (letters.Length > 1)
+            {
                 throw new InputStringValidateException($"Пара имеет более одного символа для повторения: {match.Value}");
+            }
 
             return (letters[0], int.Parse(match.Value[^1..]));
         }

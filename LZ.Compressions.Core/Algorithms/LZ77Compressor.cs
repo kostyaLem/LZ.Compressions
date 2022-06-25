@@ -144,6 +144,7 @@ namespace LZ.Compressions.Core.Algorithms
         }
 
         public void ValidateBeforeCompress(string input) { }
+
         public void ValidateBeforeDecompress(string input)
         {
             var matches = Regex.Matches(input, PairPattern);
