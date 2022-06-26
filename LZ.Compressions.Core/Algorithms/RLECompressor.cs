@@ -58,7 +58,7 @@ namespace LZ.Compressions.Core.Algorithms
 
         public void ValidateBeforeCompress(string input)
         {
-            if (input.Any(char.IsLetter))
+            if (input.Any(x => !char.IsLetter(x)))
                 throw new InputStringValidateException("Входная строка содержит не буквы");
         }
 
