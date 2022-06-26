@@ -21,8 +21,14 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
         public LZWViewModel(LZWCompressor compressor, ITimerService timer) : base(compressor, timer)
         {
             InitialDictionary = string.Empty;
+            Examples = new List<CompressExample>()
+            {
+               new CompressExample("abacabadabacabae", "0 1 0 2 5 0 3 9 8 6 4"),
+               new CompressExample("TOBEORNOTTOBE", "0 1 2 3 1 4 5 1 0 6 8"),
+            };
         }
 
+        // Переопределённый метод сжатия с добавлением вариантов кодирования (словарь)
         public override void Compress()
         {
             var compressor = _compressor as LZWCompressor;
@@ -32,6 +38,7 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
             InitialDictionary = string.Join(Environment.NewLine, compressed.Dictioanry);
         }
 
+        // Переопределённый метод распаковки  с добавлением вариантов кодирования (словарь)
         public override void Decompress()
         {
             var compressor = _compressor as LZWCompressor;
@@ -41,6 +48,12 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
                 .ToDictionary(p => p.Index, x => x.Str);
 
             DecompressedString = compressor!.Decompress(CompressedString, dictionary);
+        }
+
+        public override void ClearData()
+        {
+            base.ClearData();
+            InitialDictionary = string.Empty;
         }
     }
 }

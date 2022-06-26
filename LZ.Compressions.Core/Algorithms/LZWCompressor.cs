@@ -1,5 +1,6 @@
 ﻿using LZ.Compressions.Core.Exceptions;
 using LZ.Compressions.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -52,6 +53,11 @@ namespace LZ.Compressions.Core.Algorithms
 
         public string Decompress(string compressed, IDictionary<int, string> initialDictionary)
         {
+            if (initialDictionary.Count == 0 || initialDictionary.All(x => string.IsNullOrWhiteSpace(x.Value)))
+            {
+                throw new InputStringValidateException("Необходим словарь для распаковки строки.");
+            }
+
             var parsedData = compressed.Split(Delimiter)
                 .Select(int.Parse)
                 .ToArray();

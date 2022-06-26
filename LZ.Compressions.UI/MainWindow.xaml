@@ -84,8 +84,23 @@
                             Data="{StaticResource InfoGeometry}"
                             Fill="{DynamicResource DarkMaskBrush}"
                             Stretch="Uniform"
-                            ToolTip="Все символы включая пробелы (Исключительно символы, участвующие в кодировании)"
-                            ToolTipService.InitialShowDelay="0" />
+                            ToolTipService.InitialShowDelay="0"
+                            ToolTipService.ShowDuration="100000">
+                            <Path.ToolTip>
+                                <ListView
+                                    Margin="0"
+                                    Padding="0"
+                                    BorderThickness="0"
+                                    ItemsSource="{Binding SelectedCompressorViewModel.Examples, Mode=OneWay}">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn DisplayMemberBinding="{Binding Input}" Header="Decompressed" />
+                                            <GridViewColumn DisplayMemberBinding="{Binding Output}" Header="Compressed" />
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </Path.ToolTip>
+                        </Path>
                     </StackPanel>
                 </hc:Divider.Content>
 
@@ -96,7 +111,6 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition />
-                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -161,8 +175,10 @@
                         Margin="0,5,0,0"
                         VerticalContentAlignment="Top"
                         hc:InfoElement.Placeholder="Словарь"
+                        AcceptsReturn="True"
                         DockPanel.Dock="Bottom"
                         Text="{Binding SelectedCompressorViewModel.InitialDictionary, Mode=TwoWay}"
+                        VerticalScrollBarVisibility="Auto"
                         Visibility="{Binding SelectedCompressorViewModel, Converter={converters:IsDictionarySupportVMConverter}}" />
                     <hc:TextBox
                         VerticalContentAlignment="Top"
