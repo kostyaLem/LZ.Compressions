@@ -1,5 +1,6 @@
 ﻿using LZ.Compressions.Core.Exceptions;
 using LZ.Compressions.Core.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -41,7 +42,7 @@ namespace LZ.Compressions.Core.Algorithms
             return new CompressResult(compressedStr, compressedLength);
         }
 
-        public string Decompress(string compressed)
+        public string Decompress(string compressed, IDictionary<int, string> initialDictionary = null)
         {
             var strBuilder = new StringBuilder();
             var matches = Regex.Matches(compressed, PairPattern);

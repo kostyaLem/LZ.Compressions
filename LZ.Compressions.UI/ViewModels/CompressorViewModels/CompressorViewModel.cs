@@ -1,21 +1,24 @@
 ﻿using DevExpress.Mvvm;
 using LZ.Compressions.Core.Algorithms;
 using LZ.Compressions.Core.Exceptions;
+using LZ.Compressions.UI.Models;
 using LZ.Compressions.UI.Services;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
 {
-    public abstract class CompressorViewModel : ViewModelBase
+    internal abstract class CompressorViewModel : ViewModelBase
     {
         // Алгоритм сжатия текста
-        private readonly ITextCompressor _compressor;
+        protected readonly ITextCompressor _compressor;
         // Таймер для оценки времени выполнения
         private readonly ITimerService _timer;
 
         public abstract string Title { get; }
-        public abstract string Decryption { get; }
+        public abstract string Caption { get; }
+        public abstract IReadOnlyList<CompressExample> Examples { get; }
 
         // Команда сжатия
         public DelegateCommand CompressCommand { get; }
@@ -68,10 +71,7 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
                 // Вызывать проверку входной строки перед сжатием
                 _compressor.ValidateBeforeCompress(DecompressedString);
 
-                var compressed = _compressor.Compress(DecompressedString);
-
-                // Вывести потраченное время и результат
-                (CompressedString, CompressedLength) = compressed;
+                Compress();
             }
             catch (InputStringValidateException e)
             {
@@ -84,6 +84,14 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
             }
         }
 
+        public virtual void Compress()
+        {
+            var compressed = _compressor.Compress(DecompressedString);
+
+            // Вывести потраченное время и результат
+            (CompressedString, CompressedLength, _) = compressed;
+        }
+
         public virtual void DecompressData()
         {
             // Запустить таймер и сжатие строки
@@ -94,10 +102,7 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
                 // Вызывать проверку входной строки перед сжатием
                 _compressor.ValidateBeforeDecompress(CompressedString);
 
-                var decompressed = _compressor.Decompress(CompressedString);
-
-                // Вывести потраченное время и результат
-                DecompressedString = decompressed;
+                Decompress();
             }
             catch (InputStringValidateException e)
             {
@@ -108,6 +113,14 @@ namespace LZ.Compressions.UI.ViewModels.CompressorViewModels
             {
                 ElapsedTime = _timer.Stop();
             }
+        }
+
+        public virtual void Decompress()
+        {
+            var decompressed = _compressor.Decompress(CompressedString);
+
+            // Вывести потраченное время и результат
+            DecompressedString = decompressed;
         }
 
         public virtual void ClearData()

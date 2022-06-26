@@ -15,8 +15,9 @@ namespace LZ.Compressions.Core.Algorithms
             // Определяем словарь символов
             var dictionary = new Dictionary<string, int>();
             // Предзаполняем словарь дефолтными символами
-            for (int i = 0; i < 256; i++)
-                dictionary.Add(((char)i).ToString(), i);
+            var dist = uncompressed.Distinct().ToList();
+            for (int i = 0; i < dist.Count; i++)
+                dictionary.Add((dist[i]).ToString(), i);
 
             var w = string.Empty;
             var compressed = new List<int>();
@@ -46,20 +47,17 @@ namespace LZ.Compressions.Core.Algorithms
             var compressedStr = string.Join(Delimiter, compressed);
             var compressedLength = compressed.Count;
 
-            return new CompressResult(compressedStr, compressedLength);
+            return new CompressResult(compressedStr, compressedLength, dictionary.Keys.ToList());
         }
 
-        public string Decompress(string compressed)
+        public string Decompress(string compressed, IDictionary<int, string> initialDictionary)
         {
             var parsedData = compressed.Split(Delimiter)
                 .Select(int.Parse)
                 .ToArray();
 
-            // Определяем словарь символов
-            var dictionary = new Dictionary<int, string>();
-            // Предзаполняем словарь дефолтными символами
-            for (int i = 0; i < 256; i++)
-                dictionary.Add(i, ((char)i).ToString());
+            // Определяем словарь символов            
+            var dictionary = initialDictionary;
 
             var w = dictionary[parsedData[0]];
             var decompressed = new StringBuilder(w);

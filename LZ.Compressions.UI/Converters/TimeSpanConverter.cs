@@ -38,10 +38,5 @@ namespace LZ.Compressions.UI.Converters
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider) => this;
-
-        private class TimeInfo
-        {
-
-        }
     }
 }

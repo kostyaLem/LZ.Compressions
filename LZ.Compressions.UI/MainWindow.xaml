@@ -67,17 +67,36 @@
             <hc:Divider
                 Grid.Row="0"
                 Padding="10,0"
-                d:Content="Compressor Title"
-                Content="{Binding SelectedCompressorViewModel.Decryption}"
                 FontFamily="Century Gothic"
                 FontSize="18"
-                LineStrokeThickness="2" />
+                LineStrokeThickness="2">
+                <hc:Divider.Content>
+                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0"
+                            d:Text="Compressor Title"
+                            Text="{Binding SelectedCompressorViewModel.Caption}" />
+                        <Path
+                            Width="16"
+                            Height="16"
+                            Margin="5,0"
+                            Cursor="Hand"
+                            Data="{StaticResource InfoGeometry}"
+                            Fill="{DynamicResource DarkMaskBrush}"
+                            Stretch="Uniform"
+                            ToolTip="Все символы включая пробелы (Исключительно символы, участвующие в кодировании)"
+                            ToolTipService.InitialShowDelay="0" />
+                    </StackPanel>
+                </hc:Divider.Content>
+
+            </hc:Divider>
 
             <Grid Grid.Row="1">
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -86,29 +105,16 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel
+                <TextBlock
                     Grid.Row="0"
                     Grid.Column="0"
-                    Margin="0,0,0,2"
-                    Orientation="Horizontal">
-                    <TextBlock>
-                        <Run Text="Символов: " />
-                        <Run
-                            d:Text="0"
-                            FontWeight="Bold"
-                            Text="{Binding SelectedCompressorViewModel.DecompressedString.Length, Mode=OneWay, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}" />
-                    </TextBlock>
-                    <Path
-                        Width="16"
-                        Height="16"
-                        Margin="5,0"
-                        Cursor="Hand"
-                        Data="{StaticResource InfoGeometry}"
-                        Fill="{DynamicResource DarkMaskBrush}"
-                        Stretch="Uniform"
-                        ToolTip="Учитываются все символы включая пробелы"
-                        ToolTipService.InitialShowDelay="0" />
-                </StackPanel>
+                    Margin="0,0,0,2">
+                    <Run Text="Символов: " />
+                    <Run
+                        d:Text="0"
+                        FontWeight="Bold"
+                        Text="{Binding SelectedCompressorViewModel.DecompressedString.Length, Mode=OneWay, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}" />
+                </TextBlock>
 
                 <StackPanel
                     Grid.Row="0"
@@ -142,20 +148,25 @@
                     Grid.Row="1"
                     Grid.Column="0"
                     VerticalContentAlignment="Top"
-                    hc:BorderElement.CornerRadius="10,5,0,10"
+                    hc:BorderElement.CornerRadius="10,5,5,10"
                     hc:InfoElement.Placeholder="Введите строку для сжатия"
                     AcceptsReturn="True"
                     Text="{Binding SelectedCompressorViewModel.DecompressedString, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="Wrap"
                     VerticalScrollBarVisibility="Auto" />
 
-                <DockPanel
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    LastChildFill="True">
+                <DockPanel Grid.Row="1" Grid.Column="2">
+                    <hc:TextBox
+                        Height="100"
+                        Margin="0,5,0,0"
+                        VerticalContentAlignment="Top"
+                        hc:InfoElement.Placeholder="Словарь"
+                        DockPanel.Dock="Bottom"
+                        Text="{Binding SelectedCompressorViewModel.InitialDictionary, Mode=TwoWay}"
+                        Visibility="{Binding SelectedCompressorViewModel, Converter={converters:IsDictionarySupportVMConverter}}" />
                     <hc:TextBox
                         VerticalContentAlignment="Top"
-                        hc:BorderElement.CornerRadius="5,10,5,0"
+                        hc:BorderElement.CornerRadius="5,10,10,5"
                         hc:InfoElement.Placeholder="Введите строку для распаковки"
                         AcceptsReturn="True"
                         Text="{Binding SelectedCompressorViewModel.CompressedString, UpdateSourceTrigger=PropertyChanged}"

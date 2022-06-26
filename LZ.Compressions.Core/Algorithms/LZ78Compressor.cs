@@ -58,7 +58,7 @@ namespace LZ.Compressions.Core.Algorithms
             return new CompressResult(compressedStr, compressedLength);
         }
 
-        public string Decompress(string compressed)
+        public string Decompress(string compressed, IDictionary<int, string> initialDictionary = null)
         {
             var strBuilder = new StringBuilder();
 
